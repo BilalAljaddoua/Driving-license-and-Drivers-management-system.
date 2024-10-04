@@ -40,9 +40,9 @@ namespace DVLD_DataAccess
         }
 
         //================================================Add New User===================================================================================
-        static public int AddUser(string UserName, string Password, bool IsActive)
+        static public int AddUser(string UserName,int PersonID, string Password, bool IsActive)
         {
-              int PersonID=-1;
+              int UserID=-1;
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
  
              SqlCommand command = new SqlCommand("SP_AddNewUser", connection);
@@ -51,7 +51,9 @@ namespace DVLD_DataAccess
             command.Parameters.AddWithValue("@UserName", UserName);
             command.Parameters.AddWithValue("@Password", Password);
             command.Parameters.AddWithValue("@IsActive", IsActive);
-            SqlParameter OutputParameter = new SqlParameter("@PersonID", SqlDbType.Int)
+            command.Parameters.AddWithValue("@PersonID", PersonID);
+
+            SqlParameter OutputParameter = new SqlParameter("@UserID", SqlDbType.Int)
             {
                 Direction = ParameterDirection.Output,
             };
@@ -60,7 +62,7 @@ namespace DVLD_DataAccess
             {
                 connection.Open();
                 command.ExecuteNonQuery();
-                PersonID = (int)command.Parameters["@PersonID"].Value;
+                UserID = (int)command.Parameters["@UserID"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -68,7 +70,7 @@ namespace DVLD_DataAccess
                 connection.Close();
             }
 
-            return PersonID;
+            return UserID;
 
         }
 

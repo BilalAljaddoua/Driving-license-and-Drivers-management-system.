@@ -97,7 +97,8 @@ namespace DVLD_Buisness
 
         private bool _AddUser(int PersonID, string UserName, string Password, bool IsActive)
         {
-            return clsUserData.AddUser(PersonID, UserName, Password, IsActive);
+             UserID= clsUserData.AddUser( UserName,PersonID, Password, IsActive);
+            return UserID != -1;
         }
         static public bool DeleteUserByUserName(string UserName)
         {

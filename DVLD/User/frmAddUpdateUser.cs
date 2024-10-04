@@ -183,7 +183,7 @@ namespace DVLD.User
             if (_Mode == enMode.AddNew)
             {
 
-                if (clsUser.IsUserExistWithPerson(1))//يرجع لها
+                if (clsUser.IsUserExistWithPerson(ctrlPersonCardWithFilter1.PersonID))//يرجع لها
                 {
                     e.Cancel = true;
                     errorProvider1.SetError(txtUserName, "username is used by another user");
@@ -198,7 +198,7 @@ namespace DVLD.User
                 //incase update make sure not to use anothers user name
                 if (_User.UserName !=txtUserName.Text.Trim())
                 {
-                        if (clsUser.IsUserExistWithPerson(1))//يرجع لها
+                        if (clsUser.IsUserExistWithPerson(ctrlPersonCardWithFilter1.PersonID))//يرجع لها
                         {
                             e.Cancel = true;
                             errorProvider1.SetError(txtUserName, "username is used by another user");
