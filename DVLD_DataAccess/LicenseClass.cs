@@ -13,23 +13,14 @@ namespace DVLD_DataAccess
 {
     public class clsLicenseClassData
     {
-
-
-
-
-
         //================================================Find LicenseClass==================================================================================
         static public DataTable GetAllLicenseClass()
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-
-            string quere = @"SELECT *
-                                                    FROM [dbo].[LicenseClasses]    ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+            SqlCommand command = new SqlCommand("SP_GetAllLicenseClasses", connection);
+            command.CommandType=CommandType.StoredProcedure;
 
 
             DataTable dt = new DataTable();
@@ -59,23 +50,10 @@ namespace DVLD_DataAccess
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+             
 
-
-            string quere = @"SELECT [ClassName]
-                                                        ,[ClassDescription]
-                                                        ,[MinimumAllowedAge]
-                                                        ,[DefaultValidityLength]
-                                                        ,[ClassFees]
-                                                    FROM [dbo].[LicenseClasses]
-                                                        WHERE       LicenseClassID=@LicenseClassID ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
-            command.Parameters.AddWithValue("@ClassName", ClassName);
-            command.Parameters.AddWithValue("@ClassDescription", ClassDescription);
-            command.Parameters.AddWithValue("@MinimumAllowedAge", MinimumAllowedAge);
-            command.Parameters.AddWithValue("@DefaultValidityLength", DefaultValidityLength);
-            command.Parameters.AddWithValue("@ClassFees", ClassFees);
+            SqlCommand command = new SqlCommand("SP_FindLicenseClassesByID", connection);
+             command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@LicenseClassID", LicenseClassID);
 
             bool IsRead = false;
@@ -111,19 +89,9 @@ namespace DVLD_DataAccess
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @"SELECT [LicenseClassID]
-                                                         ,[ClassName]
-                                                        ,[ClassDescription]
-                                                        ,[MinimumAllowedAge]
-                                                        ,[DefaultValidityLength]
-                                                        ,[ClassFees]
-                                                    FROM [dbo].[LicenseClasses]
-                                                        WHERE       ClassName=@ClassName        ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+             
+            SqlCommand command = new SqlCommand("SP_FindLicenseClassesByName", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@ClassName", ClassName);
 
 
@@ -164,25 +132,21 @@ namespace DVLD_DataAccess
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-
-            string quere = @" UPDATE [dbo].[LicenseClasses]
-                                                              SET [ClassFees] = @ClassFees 
-                                                            WHERE LicenseClassID=@LicenseClassID ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+            SqlCommand command = new SqlCommand("SP_UpdateFeesByLicenseClassesID", connection);
+            command.CommandType = CommandType.StoredProcedure;
 
             command.Parameters.AddWithValue("@LicenseClassID", LicenseClassID);
             command.Parameters.AddWithValue("@ClassFees", ClassFees);
+            SqlParameter sqlParameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(sqlParameter);
             bool IsSuccess = false;
-            object Result;
-            try
+             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    IsSuccess = (ID != 0);
-                }
+               IsSuccess=(bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -199,25 +163,21 @@ namespace DVLD_DataAccess
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-
-            string quere = @" UPDATE [dbo].[LicenseClasses]
-                                                              SET [ClassFees] = @ClassFees 
-                                                            WHERE ClassName=@ClassName ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+            SqlCommand command = new SqlCommand("SP_UpdateFeesByLicenseClassesName", connection);
+            command.CommandType = CommandType.StoredProcedure;
 
             command.Parameters.AddWithValue("@ClassName", ClassName);
             command.Parameters.AddWithValue("@ClassFees", ClassFees);
+            SqlParameter sqlParameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(sqlParameter);
             bool IsSuccess = false;
-            object Result;
             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    IsSuccess = (ID != 0);
-                }
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -231,9 +191,6 @@ namespace DVLD_DataAccess
         }
 
         //====================================================================================================================================
-
-
-
 
 
     }

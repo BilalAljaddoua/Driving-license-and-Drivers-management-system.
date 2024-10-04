@@ -13,24 +13,19 @@ namespace DVLD_DataAccess
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-
-            string quere = @"SELECT Users.UserID, Users.PersonID, (People.FirstName +' '+ People.SecondName +' ' +People.ThirdName +' '+ People.LastName)as FullName, Users.UserName, Users.IsActive
-FROM     People INNER JOIN
-                  Users ON People.PersonID = Users.PersonID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+            SqlCommand command = new SqlCommand("SP_GetAllUsers", connection);
+            command.CommandType = CommandType.StoredProcedure;
             DataTable dt = new DataTable();
             try
             {
                 connection.Open();
                 SqlDataReader Reader = command.ExecuteReader();
-
-                while (Reader.Read())
+                Reader.Read();
+                if (Reader.HasRows)
                 {
-
                     dt.Load(Reader);
                 }
+               Reader.Close();
             }
             catch (Exception ex) { }
             finally
@@ -45,40 +40,27 @@ FROM     People INNER JOIN
         }
 
         //================================================Add New User===================================================================================
-        static public bool AddUser(int PersonID, string UserName, string Password, bool IsActive)
+        static public int AddUser(string UserName, string Password, bool IsActive)
         {
-
+              int PersonID=-1;
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @"INSERT INTO [dbo].[Users]
-                                                            ([PersonID]
-                                                            ,[UserName]
-                                                            ,[Password]
-                                                            ,[IsActive])
-                                                      VALUES
-                                                            ( 
-                                                            @PersonID, 
-                                                             @UserName,  
-                                                             @Password,  
-                                                             @IsActive)  ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+ 
+             SqlCommand command = new SqlCommand("SP_AddNewUser", connection);
+            command.CommandType=CommandType.StoredProcedure;
 
             command.Parameters.AddWithValue("@UserName", UserName);
             command.Parameters.AddWithValue("@Password", Password);
             command.Parameters.AddWithValue("@IsActive", IsActive);
-            command.Parameters.AddWithValue("@PersonID", PersonID);
-
-
-
-
-            int Result = 0;
-            try
+            SqlParameter OutputParameter = new SqlParameter("@PersonID", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output,
+            };
+            command.Parameters.Add(OutputParameter);
+             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-
+                command.ExecuteNonQuery();
+                PersonID = (int)command.Parameters["@PersonID"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -86,8 +68,7 @@ FROM     People INNER JOIN
                 connection.Close();
             }
 
-            return Result != 0;
-
+            return PersonID;
 
         }
 
@@ -96,13 +77,9 @@ FROM     People INNER JOIN
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @"select * from [dbo].[Users] 
-                                        where PersonID=@PersonID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+             
+            SqlCommand command = new SqlCommand("SP_FindUserbyPersonID", connection);
+            command.CommandType= CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@PersonID", PersonID);
             bool IsRead = false;
 
@@ -118,7 +95,6 @@ FROM     People INNER JOIN
                     IsActive = (bool)Reader["IsActive"];
                     UserName = (string)Reader["UserName"];
                     UserID = (int)Reader["UserID"];
-
 
                 }
             }
@@ -136,13 +112,10 @@ FROM     People INNER JOIN
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+             
 
-
-            string quere = @"select * from [dbo].[Users] 
-                                        where UserName=@UserName";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+            SqlCommand command = new SqlCommand("SP_FindUserbyName", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@UserName", UserName);
             bool IsRead = false;
 
@@ -178,12 +151,8 @@ FROM     People INNER JOIN
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-
-            string quere = @"select * from [dbo].[Users] 
-                                        where UserID=@UserID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+            SqlCommand command = new SqlCommand("SP_FindUserbyUserID", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@UserID", UserID);
             bool IsRead = false;
 
@@ -217,12 +186,10 @@ FROM     People INNER JOIN
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+             
 
-
-            string quere = @"select * from [dbo].[Users] 
-                                        where UserName=@UserName and Password=@Password";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+            SqlCommand command = new SqlCommand("SP_FindByUserNameAndPassword", connection);
+            command.CommandType = CommandType.StoredProcedure;
 
             command.Parameters.AddWithValue("@UserName", UserName);
             command.Parameters.AddWithValue("@Password", Password);
@@ -260,32 +227,25 @@ FROM     People INNER JOIN
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @"UPDATE [dbo].[Users]
-                                                            SET  
-                                                               [UserName] =  @UserName 
-                                                               ,[Password] = @Password 
-                                                               ,[IsActive] = @IsActive 
-                                                          WHERE UserID=@UserID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+             
+            SqlCommand command = new SqlCommand("SP_UpdateUserByUserID", connection);
+            command.CommandType = CommandType.StoredProcedure;
 
             command.Parameters.AddWithValue("@UserName", UserName);
             command.Parameters.AddWithValue("@Password", Password);
             command.Parameters.AddWithValue("@IsActive", IsActive);
             command.Parameters.AddWithValue("@UserID", UserID);
-
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             bool IsSuccess = false;
-            object Result;
-            try
+             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    IsSuccess = (ID != 0);
-                }
+               command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -302,31 +262,23 @@ FROM     People INNER JOIN
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-
-            string quere = @"UPDATE [dbo].[Users]
-                                                            SET  
-                                                               [UserName] =  @NewUserName 
-                                                               ,[Password] = @Password 
-                                                               ,[IsActive] = @IsActive 
-                                                          WHERE UserName=@UserName";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+            SqlCommand command = new SqlCommand("SP_UpdateUserByUserName", connection);
+            command.CommandType = CommandType.StoredProcedure;
 
             command.Parameters.AddWithValue("@UserName", UserName);
             command.Parameters.AddWithValue("@Password", Password);
             command.Parameters.AddWithValue("@IsActive", IsActive);
-            command.Parameters.AddWithValue("@NewUserName", NewUserName);
-
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             bool IsSuccess = false;
-            object Result;
             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    IsSuccess = (ID != 0);
-                }
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -345,26 +297,22 @@ FROM     People INNER JOIN
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @"
-                                    DELETE FROM [dbo].[Users]
-                                          WHERE PersonID=@PersonID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+             
+            SqlCommand command = new SqlCommand("SP_DeleteUserByPersonID", connection);
+            command.CommandType=CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@PersonID", PersonID);
-
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             bool IsSuccess = false;
-            object Result;
+
             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    IsSuccess = (ID != 0);
-                }
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -381,25 +329,21 @@ FROM     People INNER JOIN
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-
-            string quere = @"
-                                    DELETE FROM [dbo].[Users]
-                                          WHERE UserName=@UserName";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+            SqlCommand command = new SqlCommand("SP_DeleteUserByUserName", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@UserName", UserName);
-
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             bool IsSuccess = false;
-            object Result;
+
             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    IsSuccess = (ID != 0);
-                }
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -408,7 +352,6 @@ FROM     People INNER JOIN
             }
 
             return IsSuccess;
-
 
         }
 
@@ -420,27 +363,22 @@ FROM     People INNER JOIN
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @"select * from [dbo].[Users] 
-                                        where UserName=@UserName";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+             
+            SqlCommand command = new SqlCommand("SP_IsUserActiveByUserName", connection);
+            command.CommandType= CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@UserName", UserName);
+            SqlParameter parameter = new SqlParameter("@IsActive", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             bool IsActive = false;
 
             try
             {
                 connection.Open();
-                SqlDataReader Reader = command.ExecuteReader();
-
-                while (Reader.Read())
-                {
-                    IsActive = (bool)Reader["IsActive"];
-
-
-                }
+                command.ExecuteNonQuery();
+                IsActive = (bool)command.Parameters["@IsActive"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -454,29 +392,23 @@ FROM     People INNER JOIN
         }
         static public bool IsUserActiveByPersonID(int PersonID)
         {
-
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-
-            string quere = @"select * from [dbo].[Users] 
-                                        where PersonID=@PersonID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+            SqlCommand command = new SqlCommand("SP_IsUserActiveByPersonID", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@PersonID", PersonID);
+            SqlParameter parameter = new SqlParameter("@IsActive", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             bool IsActive = false;
 
             try
             {
                 connection.Open();
-                SqlDataReader Reader = command.ExecuteReader();
-
-                while (Reader.Read())
-                {
-                    IsActive = (bool)Reader["IsActive"];
-
-
-                }
+                command.ExecuteNonQuery();
+                IsActive = (bool)command.Parameters["@IsActive"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -486,7 +418,6 @@ FROM     People INNER JOIN
 
 
             return IsActive;
-
         }
 
         //==============================================================================================================================
