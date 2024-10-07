@@ -31,14 +31,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ConfigParser, Version=0.3.2.8, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\DVLD\packages\Salaros.ConfigParser.0.3.2\lib\net45\ConfigParser.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WakaTime, Version=8.1.11.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\DVLD\packages\WakaTime.8.1.11\lib\net45\WakaTime.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="clsDetainedLicenseData.cs" />
@@ -57,6 +64,9 @@
     <Compile Include="clsPersonData.cs" />
     <Compile Include="clsCountryData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

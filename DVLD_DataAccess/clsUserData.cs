@@ -259,50 +259,17 @@ namespace DVLD_DataAccess
             return IsSuccess;
 
         }
-        static public bool UpdateUserByUserName(string UserName, string NewUserName, string Password, bool IsActive)
-        {
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            SqlCommand command = new SqlCommand("SP_UpdateUserByUserName", connection);
-            command.CommandType = CommandType.StoredProcedure;
-
-            command.Parameters.AddWithValue("@UserName", UserName);
-            command.Parameters.AddWithValue("@Password", Password);
-            command.Parameters.AddWithValue("@IsActive", IsActive);
-            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
-            {
-                Direction = ParameterDirection.Output
-            };
-            command.Parameters.Add(parameter);
-            bool IsSuccess = false;
-            try
-            {
-                connection.Open();
-                command.ExecuteNonQuery();
-                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
-            }
-            catch (Exception ex) { }
-            finally
-            {
-                connection.Close();
-            }
-
-
-            return IsSuccess;
-
-        }
 
         //================================================Delete User==================================================================================
 
-        static public bool DeleteUserByPersonID(int PersonID)
+        static public bool DeleteUserByPersonID(int UserID)
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
              
-            SqlCommand command = new SqlCommand("SP_DeleteUserByPersonID", connection);
+            SqlCommand command = new SqlCommand("SP_DeleteUserByUserID", connection);
             command.CommandType=CommandType.StoredProcedure;
-            command.Parameters.AddWithValue("@PersonID", PersonID);
+            command.Parameters.AddWithValue("@UserID", UserID);
             SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
             {
                 Direction = ParameterDirection.Output
@@ -326,40 +293,8 @@ namespace DVLD_DataAccess
 
 
         }
-        static public bool DeleteUserByUserName(string UserName)
-        {
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            SqlCommand command = new SqlCommand("SP_DeleteUserByUserName", connection);
-            command.CommandType = CommandType.StoredProcedure;
-            command.Parameters.AddWithValue("@UserName", UserName);
-            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
-            {
-                Direction = ParameterDirection.Output
-            };
-            command.Parameters.Add(parameter);
-            bool IsSuccess = false;
-
-            try
-            {
-                connection.Open();
-                command.ExecuteNonQuery();
-                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
-            }
-            catch (Exception ex) { }
-            finally
-            {
-                connection.Close();
-            }
-
-            return IsSuccess;
-
-        }
-
-
+ 
         //=================================================Is Active================================================================================
-
 
         static public bool IsUserActiveByUsername(string UserName)
         {

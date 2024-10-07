@@ -60,7 +60,7 @@ namespace DVLD_Buisness
         }
         private bool _UpdateTestTypeFees()
         {
-            return clsTestTypeData.UpdateFeesByLicenseClassesID((int)this.ID, this.Title, this.Description, this.Fees);
+            return clsTestTypeData.UpdateByTestTypeID((int)this.ID, this.Title, this.Description, this.Fees);
         }
 
         public bool Save()

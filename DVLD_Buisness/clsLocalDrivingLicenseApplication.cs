@@ -88,7 +88,7 @@ namespace DVLD_Buisness
 
         private bool _UpdateByLocalDrivingLicenseApplicationID()
         {
-            return clsLocalDrivingLicenseApplicationData.UpdateByLocalDrivingLicenseApplicationID(LocalDrivingLicenseApplicationID, ApplicationID, LicenseClassID);
+            return clsLocalDrivingLicenseApplicationData.UpdateLDLAByLDLA_ID(LocalDrivingLicenseApplicationID, ApplicationID, LicenseClassID);
         }
         static public bool DeleteByLocalDrivingLicenseApplicationID(int LocalDrivingLicenseApplicationID)
         {
@@ -138,12 +138,12 @@ namespace DVLD_Buisness
 
         public bool IsThereAnActiveSchudleTest( clsTestType.enTestType TestTypeID)
         {
-           return  clsLocalDrivingLicenseApplicationData.IsthereAnActiveAppintmentWithTest(_LocalDrivingLicenseApplicationID, (int)TestTypeID);
+           return  clsLocalDrivingLicenseApplicationData.IsThereActiveAppintmentWithTest(_LocalDrivingLicenseApplicationID, (int)TestTypeID);
         }
 
        static  public bool IsThereAnActiveSchudleTest(int LocalDrivingLicenseApplicationID, clsTestType.enTestType TestTypeID)
         {
-            return clsLocalDrivingLicenseApplicationData.IsthereAnActiveAppintmentWithTest(LocalDrivingLicenseApplicationID, (int)TestTypeID);
+            return clsLocalDrivingLicenseApplicationData.IsThereActiveAppintmentWithTest(LocalDrivingLicenseApplicationID, (int)TestTypeID);
         }
         public bool IsPassedAllTest()
         {

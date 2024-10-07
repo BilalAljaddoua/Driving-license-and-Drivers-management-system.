@@ -42,12 +42,11 @@ namespace DVLD.Tests
                 btnSave.Enabled = true;
 
 
-            int _TestID = ctrlSecheduledTest1.TestID;
-            if (_TestID != -1)
+          
+            if (clsTest.FindTestByTestAppointmentID(_AppointmentID) != null) //هنا كان يوجد غلط عقدني  :-).......  4/10/2024
             {
-                _Test = clsTest.FindTestByTestAppointmentID(_TestID);
-
-
+                _Test = clsTest.FindTestByTestAppointmentID(_AppointmentID);
+                 
                 if (_Test.TestResult)
                     rbPass.Checked = true;
                 else

@@ -19,29 +19,21 @@ namespace DVLD_DataAccess
 
         static public DataTable GetAllTestsByLDLAppAndTestType(int LocalDrivingLicenseApplicationID, int TestTypeID)
         {
-
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @" SELECT TestAppointments.TestAppointmentID, TestAppointments.PaidFees, TestAppointments.AppointmentDate, Users.UserName,   TestAppointments.IsLocked
-FROM     TestAppointments INNER JOIN
-                  Users ON TestAppointments.CreatedByUserID = Users.UserID
-WHERE         LocalDrivingLicenseApplicationID=@LocalDrivingLicenseApplicationID and TestTypeID=@TestTypeID order by AppointmentDate desc ;
-";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+            SqlCommand command = new SqlCommand("SP_GetAllTestsByLDLAppAndTestType", connection);
             command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
             command.Parameters.AddWithValue("@LocalDrivingLicenseApplicationID", LocalDrivingLicenseApplicationID);
+            command.CommandType = CommandType.StoredProcedure;
             DataTable dt = new DataTable();
             try
             {
                 connection.Open();
                 SqlDataReader Reader = command.ExecuteReader();
-
+ 
                 if (Reader.HasRows)
                 {
                     dt.Load(Reader);
-                }
+                } 
             }
             catch (Exception ex) { }
             finally
@@ -62,26 +54,10 @@ WHERE         LocalDrivingLicenseApplicationID=@LocalDrivingLicenseApplicationID
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
 
-            string quere = @" INSERT INTO [dbo].[TestAppointments]
-                                                                                      ([TestTypeID]
-                                                                                      ,[LocalDrivingLicenseApplicationID]
-                                                                                      ,[AppointmentDate]
-                                                                                      ,[PaidFees]
-                                                                                      ,[CreatedByUserID]
-                                                                                      ,[IsLocked]
-                                                                                      ,[RetakeTestApplicationID])
-                                                                      VALUES
-                                                                           (@TestTypeID, 
-                                                                            @LocalDrivingLicenseApplicationID,  
-                                                                            @AppointmentDate, 
-                                                                            @PaidFees, 
-                                                                            @CreatedByUserID, 
-                                                                            @IsLocked ,
-                                                                            @RetakeTestApplicationID); select SCOPE_IDENTITY(); ";
 
-            SqlCommand command = new SqlCommand(quere, connection);
-
-            command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
+            SqlCommand command = new SqlCommand("SP_AddTestAppointment", connection);
+            command.CommandType=CommandType.StoredProcedure;
+             command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
             command.Parameters.AddWithValue("@LocalDrivingLicenseApplicationID", LocalDrivingLicenseApplicationID);
             command.Parameters.AddWithValue("@AppointmentDate", AppointmentDate);
             command.Parameters.AddWithValue("@PaidFees", PaidFees);
@@ -92,21 +68,18 @@ WHERE         LocalDrivingLicenseApplicationID=@LocalDrivingLicenseApplicationID
             else
                 command.Parameters.AddWithValue("@RetakeTestApplicationID", System.DBNull.Value);
 
-
-
-
-
-            object Result;
+            SqlParameter parameter = new SqlParameter("@TestAppointmentID", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output,
+            };
+            command.Parameters.Add(parameter);
             int TestAppoinment = -1;
 
             try
             {
                 connection.Open();
-                Result = command.ExecuteScalar();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    TestAppoinment = ID;
-                }
+                command.ExecuteNonQuery();
+                TestAppoinment = (int)command.Parameters["@TestAppointmentID"].Value;
 
             }
             catch (Exception ex) { }
@@ -125,22 +98,9 @@ WHERE         LocalDrivingLicenseApplicationID=@LocalDrivingLicenseApplicationID
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @"  SELECT
-                                            [TestTypeID],
-                                            [LocalDrivingLicenseApplicationID]
-                                           ,[AppointmentDate]
-                                           ,[PaidFees]
-                                           ,[CreatedByUserID]
-                                           ,[IsLocked]
-                                           ,[RetakeTestApplicationID]
-                                           
-                                                FROM [dbo].[TestAppointments]
-                                          WHERE         TestAppointmentID=@TestAppointmentID ;   ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+          
+            SqlCommand command = new SqlCommand("SP_FindTestAppointmentByID", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@TestAppointmentID", TestAppointmentID);
             bool IsRead = false;
 
@@ -173,22 +133,12 @@ WHERE         LocalDrivingLicenseApplicationID=@LocalDrivingLicenseApplicationID
 
         }
         //================================================Update TestAppointment==================================================================================
-        static public bool UpdateTestByTestID(int TestAppointmentID, int TestTypeID, int LocalDrivingLicenseApplicationID, DateTime AppointmentDate, float PaidFees, bool IsLocked, int CreatedByUserID)
+        static public bool UpdateTestAppointmentByTestAppointmentID(int TestAppointmentID, int TestTypeID, int LocalDrivingLicenseApplicationID, DateTime AppointmentDate, float PaidFees, bool IsLocked, int CreatedByUserID)
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @" UPDATE [dbo].[TestAppointments]
-                                                      SET          [TestTypeID] = @TestTypeID 
-                                                                     ,[LocalDrivingLicenseApplicationID] = @LocalDrivingLicenseApplicationID 
-                                                                     ,[AppointmentDate] = @AppointmentDate 
-                                                                     ,[PaidFees] = @PaidFees 
-                                                                     ,[CreatedByUserID] = @CreatedByUserID 
-                                                                     ,[IsLocked] = @IsLocked 
-                                                             WHERE  TestAppointmentID=@TestAppointmentID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+ 
+            SqlCommand command = new SqlCommand("SP_UpdateTestAppointmentByTestAppointmentID", connection);
 
             command.Parameters.AddWithValue("@TestAppointmentID", TestAppointmentID);
             command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
@@ -197,17 +147,20 @@ WHERE         LocalDrivingLicenseApplicationID=@LocalDrivingLicenseApplicationID
             command.Parameters.AddWithValue("@PaidFees", PaidFees);
             command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
             command.Parameters.AddWithValue("@IsLocked", IsLocked);
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
+            command.CommandType = CommandType.StoredProcedure;
 
             bool IsSuccess = false;
-            object Result;
             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    IsSuccess = (ID != 0);
-                }
+                command.ExecuteNonQuery();
+             IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
+
             }
             catch (Exception ex) { }
             finally
@@ -222,30 +175,25 @@ WHERE         LocalDrivingLicenseApplicationID=@LocalDrivingLicenseApplicationID
 
         //================================================Delete TestAppointment==================================================================================
 
-        static public bool DeleteTestByTestAppointmentID(int TestAppointmentID)
+        static public bool DeleteTestAppointmentByTestAppointmentID(int TestAppointmentID)
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @"
-                                    DELETE FROM [dbo].[TestAppointments]
-                                          WHERE TestAppointmentID=@TestAppointmentID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+             
+            SqlCommand command = new SqlCommand("SP_DeleteTestAppointmentByTestAppointmentID", connection);
+            command.CommandType= CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@TestAppointmentID", TestAppointmentID);
-
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             bool IsSuccess = false;
-            object Result;
-            try
+             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    IsSuccess = (ID != 0);
-                }
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -269,16 +217,12 @@ WHERE         LocalDrivingLicenseApplicationID=@LocalDrivingLicenseApplicationID
         {
             int AppointmentID = -1;
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @"  SELECT  TestAppointmentID     FROM [dbo].[TestAppointments]
-                                            WHERE         LocalDrivingLicenseApplicationID=@LocalDrivingLicenseApplicationID and TestTypeID=@TestTypeID and IsLocked=0 ;";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+ 
+            SqlCommand command = new SqlCommand("SP_GetActiveAppointmentID", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@LocalDrivingLicenseApplicationID", LocalDrivingLicenseApplicationID);
             command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
-            bool IsRead = false;
+  
 
             try
             {
@@ -288,7 +232,6 @@ WHERE         LocalDrivingLicenseApplicationID=@LocalDrivingLicenseApplicationID
                 if (Reader.Read())
                 {
                     AppointmentID = (int)Reader["TestAppointmentID"];
-
                 }
             }
             catch (Exception ex) { }
@@ -306,23 +249,22 @@ WHERE         LocalDrivingLicenseApplicationID=@LocalDrivingLicenseApplicationID
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @" UPDATE [dbo].[TestAppointments]
-                                                      SET          [IsLocked] = @IsLocked 
-                                                             WHERE  TestAppointmentID=@TestAppointmentID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+ 
+            SqlCommand command = new SqlCommand("SP_LockAppintment", connection);
+            command.CommandType= CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@TestAppointmentID", TestAppointmentID);
             command.Parameters.AddWithValue("@IsLocked", IsLocked);
-
-            int Result = 0;
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
+            bool IsSuccess = false;
             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -331,35 +273,29 @@ WHERE         LocalDrivingLicenseApplicationID=@LocalDrivingLicenseApplicationID
             }
 
 
-            return Result != 0;
-
+            return IsSuccess;
         }
 
         static public int GetTestID(int TestAppointmentID)
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+             
 
-
-            string quere = @" SELECT TestID from Tests 
-where TestAppointmentID=@TestAppointmentID
-                            select SCOPE_IDENTITY();  ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+            SqlCommand command = new SqlCommand("SP_GetTestID", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@TestAppointmentID", TestAppointmentID);
- 
-            object Result;
-            int TestID = -1;
+            SqlParameter parameter = new SqlParameter("@TestID", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
+                int TestID = -1;
             try
             {
                 connection.Open();
-                Result = command.ExecuteScalar();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                        TestID = ID;
-                }
-
+                command.ExecuteNonQuery();
+                TestID = (int)command.Parameters["@TestID"].Value;
             }
             catch (Exception ex) { }
             finally

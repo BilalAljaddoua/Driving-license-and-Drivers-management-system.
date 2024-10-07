@@ -66,11 +66,11 @@ namespace DVLD_Buisness
         }
         private bool _UpdateTestByTestID()
         {
-            return clsTestAppointmentData.UpdateTestByTestID(TestAppointmentID, TestTypeID, LocalDrivingLicenseApplicationID, AppointmentDate, PaidFees, IsLocked, CreatedByUserID);
+            return clsTestAppointmentData.UpdateTestAppointmentByTestAppointmentID(TestAppointmentID, TestTypeID, LocalDrivingLicenseApplicationID, AppointmentDate, PaidFees, IsLocked, CreatedByUserID);
         }
         static public bool DeleteByTestAppointmentID(int TestAppointmentID)
         {
-            return clsTestAppointmentData.DeleteTestByTestAppointmentID(TestAppointmentID);
+            return clsTestAppointmentData.DeleteTestAppointmentByTestAppointmentID(TestAppointmentID);
         }
         static public bool IsThereActiveAppointment(int LocalDrivingLicenseApplicationID, clsTestType.enTestType TestTypeID)
         {

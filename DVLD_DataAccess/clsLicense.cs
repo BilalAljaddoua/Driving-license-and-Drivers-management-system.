@@ -21,15 +21,10 @@ namespace DVLD_DataAccess
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+             
 
-
-            string quere = @"    SELECT Licenses.LicenseID, Licenses.ApplicationID, LicenseClasses.ClassName, Licenses.IssueDate, Licenses.ExpirationDate, Licenses.IsActive
-FROM     Licenses INNER JOIN
-                  LicenseClasses ON Licenses.LicenseClass = LicenseClasses.LicenseClassID
-WHERE  (Licenses.DriverID = @DriverID)  ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+            SqlCommand command = new SqlCommand("SP_GetAllLocalLicenseForDriver", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@DriverID", DriverID);
             DataTable dataTable = new DataTable();
             try
@@ -59,32 +54,10 @@ WHERE  (Licenses.DriverID = @DriverID)  ";
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+             
 
-
-            string quere = @" INSERT INTO [dbo].[Licenses]
-                                                                              ([ApplicationID]
-                                                                              ,[DriverID]
-                                                                              ,[LicenseClass]
-                                                                              ,[IssueDate]
-                                                                              ,[ExpirationDate]
-                                                                              ,[Notes]
-                                                                              ,[PaidFees]
-                                                                              ,[IsActive]
-                                                                              ,[IssueReason]
-                                                                              ,[CreatedByUserID])
-                                                                        VALUES
-                                                                           ( @ApplicationID,  
-                                                                             @DriverID,  
-                                                                             @LicenseClass, 
-                                                                             @IssueDate,  
-                                                                             @ExpirationDate, 
-                                                                             @Notes,  
-                                                                             @PaidFees,  
-                                                                             @IsActive,  
-                                                                             @IssueReason, 
-                                                                             @CreatedByUserID ) ;SELECT SCOPE_IDENTITY(); ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+            SqlCommand command = new SqlCommand("SP_AddLicenses", connection);
+            command.CommandType= CommandType.StoredProcedure;
 
             command.Parameters.AddWithValue("@ApplicationID", ApplicationID);
             command.Parameters.AddWithValue("@DriverID", DriverID);
@@ -100,19 +73,21 @@ WHERE  (Licenses.DriverID = @DriverID)  ";
             command.Parameters.AddWithValue("@IsActive", IsActive);
             command.Parameters.AddWithValue("@IssueReason", IssueReason);
             command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
-
-
-            object Result;
+            SqlParameter parameter = new SqlParameter("@LicensID", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
+             
             int ID = -1;
             try
             {
                 connection.Open();
-                Result = command.ExecuteScalar();
-                if (Result != null && (int.TryParse(Result.ToString(), out int NewID)))
-                {
-                    ID = NewID;
-                }
+                command.ExecuteNonQuery();
+                ID = (int)command.Parameters["@LicensID"].Value;
+            
             }
+
             catch (Exception ex) { }
             finally
             {
@@ -130,24 +105,8 @@ WHERE  (Licenses.DriverID = @DriverID)  ";
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-
-            string quere = @" 
-                                    SELECT     
-                                                      [ApplicationID]
-                                                     ,[DriverID]
-                                                     ,[LicenseClass]
-                                                     ,[IssueDate]
-                                                     ,[ExpirationDate]
-                                                     ,[Notes]
-                                                     ,[PaidFees]
-                                                     ,[IsActive]
-                                                     ,[IssueReason]
-                                                     ,[CreatedByUserID]
-                                                 FROM [dbo].[Licenses]
-                                                WHERE LicenseID=@LicenseID   ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+            SqlCommand command = new SqlCommand("SP_FindLicensesByLicenseID", connection);
+            command.CommandType = CommandType.StoredProcedure;
  
             command.Parameters.AddWithValue("@LicenseID", LicenseID);
 
@@ -193,25 +152,9 @@ WHERE  (Licenses.DriverID = @DriverID)  ";
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @" 
-                                    SELECT     
-                                                      [LicenseID]
-                                                     ,[DriverID]
-                                                     ,[LicenseClass]
-                                                     ,[IssueDate]
-                                                     ,[ExpirationDate]
-                                                     ,[Notes]
-                                                     ,[PaidFees]
-                                                     ,[IsActive]
-                                                     ,[IssueReason]
-                                                     ,[CreatedByUserID]
-                                                 FROM [dbo].[Licenses]
-                                                WHERE ApplicationID=@ApplicationID   ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+             
+            SqlCommand command = new SqlCommand("SP_FindLicensesByApplicationID", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@ApplicationID  ", ApplicationID);
 
 
@@ -222,7 +165,7 @@ WHERE  (Licenses.DriverID = @DriverID)  ";
                 connection.Open();
                 SqlDataReader Reader = command.ExecuteReader();
 
-                while (Reader.Read())
+                if (Reader.Read())
                 {
                     IsRead = true;
                     DriverID = (int)Reader["DriverID"];
@@ -257,27 +200,14 @@ WHERE  (Licenses.DriverID = @DriverID)  ";
         }
 
         //================================================Update License==================================================================================
-        static public bool UpdateUserByLicenseID(int LicenseID, int ApplicationID, int DriverID, int LicenseClassID, DateTime IssueDate, DateTime ExpirationDate, string Notes, float PaidFees, bool IsActive, int IssueReason, int CreatedByUserID)
+        static public bool UpdateLicensesByLicenseID(int LicenseID, int ApplicationID, int DriverID, int LicenseClassID, DateTime IssueDate, DateTime ExpirationDate, string Notes, float PaidFees, bool IsActive, int IssueReason, int CreatedByUserID)
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+ 
 
-
-            string quere = @" UPDATE [dbo].[Licenses]
-                                         SET                  [ApplicationID] = @ApplicationID 
-                                                                ,[DriverID] = @DriverID 
-                                                                ,[LicenseClass] = @LicenseClass 
-                                                                ,[IssueDate] = @IssueDate 
-                                                                ,[ExpirationDate] = @ExpirationDate 
-                                                                ,[Notes] = @Notes 
-                                                                ,[PaidFees] = @PaidFees 
-                                                                ,[IsActive] = @IsActive 
-                                                                ,[IssueReason] = @IssueReason 
-                                                                ,[CreatedByUserID] = @CreatedByUserID 
-                                   WHERE        LicenseID=@LicenseID                   ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+            SqlCommand command = new SqlCommand("SP_UpdateLicensesByLicenseID", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@ApplicationID  ", ApplicationID);
             command.Parameters.AddWithValue("@DriverID  ", DriverID);
             command.Parameters.AddWithValue("@LicenseClass  ", LicenseClassID);
@@ -291,16 +221,17 @@ WHERE  (Licenses.DriverID = @DriverID)  ";
             command.Parameters.AddWithValue("@IssueReason  ", IssueReason);
             command.Parameters.AddWithValue("@CreatedByUserID  ", CreatedByUserID);
             command.Parameters.AddWithValue("@LicenseID  ", LicenseID);
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             bool IsSuccess = false;
-            object Result;
-            try
+             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    IsSuccess = (ID != 0);
-                }
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -312,92 +243,35 @@ WHERE  (Licenses.DriverID = @DriverID)  ";
             return IsSuccess;
 
         }
-        static public bool UpdateUserByApplicationID(int ApplicationID, int DriverID, string LicenseClass, DateTime IssueDate, DateTime ExpirationDate, string Notes, float PaidFees, bool IsActive, string IssueReason, int CreatedByUserID)
-        {
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @" UPDATE [dbo].[Licenses]
-                                         SET                [DriverID] = @DriverID 
-                                                                ,[LicenseClass] = @LicenseClass 
-                                                                ,[IssueDate] = @IssueDate 
-                                                                ,[ExpirationDate] = @ExpirationDate 
-                                                                ,[Notes] = @Notes 
-                                                                ,[PaidFees] = @PaidFees 
-                                                                ,[IsActive] = @IsActive 
-                                                                ,[IssueReason] = @IssueReason 
-                                                                ,[CreatedByUserID] = @CreatedByUserID 
-                                   WHERE        ApplicationID=@ApplicationID                   ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
-            command.Parameters.AddWithValue("@ApplicationID  ", ApplicationID);
-            command.Parameters.AddWithValue("@DriverID  ", DriverID);
-            command.Parameters.AddWithValue("@LicenseClass  ", LicenseClass);
-            command.Parameters.AddWithValue("@IssueDate  ", IssueDate);
-            command.Parameters.AddWithValue("@ExpirationDate  ", ExpirationDate);
-            if (!string.IsNullOrEmpty(Notes))
-                command.Parameters.AddWithValue("@Notes", Notes);
-            else
-                command.Parameters.AddWithValue("@Notes", System.DBNull.Value); command.Parameters.AddWithValue("@PaidFees  ", PaidFees);
-            command.Parameters.AddWithValue("@IsActive  ", IsActive);
-            command.Parameters.AddWithValue("@IssueReason  ", IssueReason);
-            command.Parameters.AddWithValue("@CreatedByUserID  ", CreatedByUserID);
-            bool IsSuccess = false;
-            object Result;
-            try
-            {
-                connection.Open();
-                Result = command.ExecuteNonQuery();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    IsSuccess = (ID != 0);
-                }
-            }
-            catch (Exception ex) { }
-            finally
-            {
-                connection.Close();
-            }
-
-
-            return IsSuccess;
-
-        }
-
+ 
         //================================================Delete License==================================================================================
 
         static public bool DeleteLicenseByLicenseID(int LicenseID)
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @"
-                                    DELETE FROM [dbo].[Licenses]
-                                          WHERE LicenseID=@LicenseID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+             
+            SqlCommand command = new SqlCommand("@SP_DeleteLicenseByLicenseID", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@LicenseID", LicenseID);
-
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             bool IsSuccess = false;
-            object Result;
             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    IsSuccess = (ID != 0);
-                }
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
             {
                 connection.Close();
             }
+
 
             return IsSuccess;
 
@@ -407,26 +281,21 @@ WHERE  (Licenses.DriverID = @DriverID)  ";
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @"
-                                    DELETE FROM [dbo].[Licenses]
-                                          WHERE ApplicationID=@ApplicationID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+             
+            SqlCommand command = new SqlCommand("SP_DeleteLicenseByApplicationID", connection);
+            command.CommandType= CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@ApplicationID", ApplicationID);
-
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             bool IsSuccess = false;
-            object Result;
             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    IsSuccess = (ID != 0);
-                }
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -434,40 +303,37 @@ WHERE  (Licenses.DriverID = @DriverID)  ";
                 connection.Close();
             }
 
-            return IsSuccess;
 
+            return IsSuccess;
 
         }
         static public bool DeActivatLicense(int LicenseID)
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+             
 
-
-            string quere = @"UPDATE [dbo].[Licenses]
-                                                          SET   [IsActive] =0 
-                                                        WHERE  LicenseID=@LicenseID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+            SqlCommand command = new SqlCommand("SP_DeActivatLicense", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@LicenseID", LicenseID);
-
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             bool IsSuccess = false;
-            object Result;
             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    IsSuccess = (ID != 0);
-                }
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
             {
                 connection.Close();
             }
+
 
             return IsSuccess;
 
@@ -482,27 +348,21 @@ WHERE  (Licenses.DriverID = @DriverID)  ";
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @"select * from [dbo].[Licenses] 
-                                        where LicenseID=@LicenseID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+             
+            SqlCommand command = new SqlCommand("SP_IsLicenseActiveByLicenseID", connection);
+            command.CommandType= CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@LicenseID", LicenseID);
-            bool IsActive = false;
-
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
+            bool IsSuccess = false;
             try
             {
                 connection.Open();
-                SqlDataReader Reader = command.ExecuteReader();
-
-                while (Reader.Read())
-                {
-                    IsActive = (bool)Reader["IsActive"];
-
-
-                }
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -511,39 +371,30 @@ WHERE  (Licenses.DriverID = @DriverID)  ";
             }
 
 
-            return IsActive;
+            return IsSuccess;
+
 
         }
-        static public int IsLicenseExists(int ApplicantPersonID, int LicenseID)
+        static public int IsLicenseExists(int ApplicantPersonID, int LicenseClassID)
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @" SELECT Licenses.LicenseID
-                 FROM     Licenses INNER JOIN
-                  Applications ON Licenses.ApplicationID = Applications.ApplicationID INNER JOIN
-                  LocalDrivingLicenseApplications ON Applications.ApplicationID = LocalDrivingLicenseApplications.ApplicationID
-
-				  where ApplicantPersonID=@ApplicantPersonID and LicenseClass=@LicenseClass";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+             
+            SqlCommand command = new SqlCommand("SP_IsLicenseExists", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@ApplicantPersonID", ApplicantPersonID);
-            command.Parameters.AddWithValue("@LicenseClass", LicenseID);
-            int ID = -1;
-
+            command.Parameters.AddWithValue("@LicenseClass", LicenseClassID);
+            SqlParameter parameter = new SqlParameter("@LicenseID", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
+            int  LicenseID=-1;
             try
             {
                 connection.Open();
-                SqlDataReader Reader = command.ExecuteReader();
-
-                while (Reader.Read())
-                {
-                    ID = (int)Reader["LicenseID"];
-
-
-                }
-                Reader.Close();
+                command.ExecuteNonQuery();
+                LicenseID = (int)command.Parameters["@LicenseID"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -552,7 +403,8 @@ WHERE  (Licenses.DriverID = @DriverID)  ";
             }
 
 
-            return ID;
+            return LicenseID;
+
 
         }
 

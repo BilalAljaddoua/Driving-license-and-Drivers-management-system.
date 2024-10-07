@@ -17,52 +17,33 @@ namespace DVLD_DataAccess
     {
 
         //================================================Add New Tests===================================================================================
-        static public bool AddTests(int TestAppointmentID, bool TestResult, string Notes, int CreatedByUserID)
+        static public int AddTest(int TestAppointmentID, bool TestResult, string   Notes, int CreatedByUserID)
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+ 
+            SqlCommand command = new SqlCommand("SP_AddTest", connection);
 
-
-            string quere = @" INSERT INTO [dbo].[Tests]
-                                                             ([TestAppointmentID]
-                                                             ,[TestResult]
-                                                             ,[Notes]
-                                                             ,[CreatedByUserID])
-                                                       VALUES
-                                                             (@TestAppointmentID 
-                                                             ,@TestResult 
-                                                             ,@Notes 
-                                                             ,@CreatedByUserID ) 
-
-                                UPDATE TestAppointments 
-                                SET IsLocked=1 where TestAppointmentID = @TestAppointmentID;
-
-";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@TestAppointmentID", TestAppointmentID);
             command.Parameters.AddWithValue("@TestResult", TestResult);
-            if (!string.IsNullOrEmpty(Notes))
-            {
-                command.Parameters.AddWithValue("@Notes", Notes);
-            }
-            else
-            {
-                command.Parameters.AddWithValue("@Notes", System.DBNull.Value);
-
-            }
+            command.Parameters.Add(new SqlParameter("@Notes", (object)Notes ?? DBNull.Value));
             command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
+            SqlParameter parameter = new SqlParameter("@TestID", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
 
 
 
 
-            int Result = 0;
+            int TestID = 0;
             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-
+                command.ExecuteNonQuery();
+                TestID = (int)command.Parameters["@TestID"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -70,7 +51,7 @@ namespace DVLD_DataAccess
                 connection.Close();
             }
 
-            return Result != 0;
+            return TestID  ;
 
 
         }
@@ -81,18 +62,9 @@ namespace DVLD_DataAccess
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-
-            string quere = @" SELECT [TestID]
-                                                            ,[TestAppointmentID]
-                                                            ,[TestResult]
-                                                            ,[Notes]
-                                                            ,[CreatedByUserID]
-                                                        FROM [dbo].[Tests]
-                                    WHERE TestID=@TestID
-                                                      ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+ 
+            SqlCommand command = new SqlCommand("SP_FindTestByTestID", connection);
+            command.CommandType= CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@TestID", TestID);
             bool IsRead = false;
 
@@ -125,16 +97,10 @@ namespace DVLD_DataAccess
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+ 
+            SqlCommand command = new SqlCommand("SP_GetLastTestPerTestType", connection);
+            command.CommandType = CommandType.StoredProcedure;
 
-
-            string quere = @"SELECT top(1) Tests.TestID, Tests.TestAppointmentID, Tests.TestResult, Tests.Notes, Tests.CreatedByUserID
-FROM     Tests INNER JOIN
-                  TestAppointments ON Tests.TestAppointmentID = TestAppointments.TestAppointmentID INNER JOIN
-                  LocalDrivingLicenseApplications ON TestAppointments.LocalDrivingLicenseApplicationID = LocalDrivingLicenseApplications.LocalDrivingLicenseApplicationID
-				  where TestAppointments.LocalDrivingLicenseApplicationID=@LocalDrivingLicenseApplicationID and TestTypeID=@TestTypeID
-				  order by TestID desc ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
             command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
             command.Parameters.AddWithValue("@LocalDrivingLicenseApplicationID", LocalDrivingLicenseApplicationID);
             bool IsRead = false;
@@ -169,19 +135,9 @@ FROM     Tests INNER JOIN
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @" SELECT [TestID]
-                                                            ,[TestAppointmentID]
-                                                            ,[TestResult]
-                                                            ,[Notes]
-                                                            ,[CreatedByUserID]
-                                                        FROM [dbo].[Tests]
-                                    WHERE TestAppointmentID=@TestAppointmentID
-                                                      ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+             
+            SqlCommand command = new SqlCommand("SP_FindTestByTestAppointmentID", connection);
+            command.CommandType= CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@TestAppointmentID", TestAppointmentID);
             bool IsRead = false;
 
@@ -193,7 +149,6 @@ FROM     Tests INNER JOIN
                 while (Reader.Read())
                 {
                     IsRead = true;
-                    TestAppointmentID = (int)Reader["TestAppointmentID"];
                     TestResult = (bool)Reader["TestResult"];
                     Notes = (string)Reader["Notes"];
                     CreatedByUserID = (int)Reader["CreatedByUserID"];
@@ -218,30 +173,24 @@ FROM     Tests INNER JOIN
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-
-            string quere = @" UPDATE [dbo].[Tests]
-                                              SET   [TestResult] = @TestResult   
-                                                      ,[Notes] = @Notes  
-                                                      ,[CreatedByUserID] = @CreatedByUserID   
-                                      WHERE TestID=@TestID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+            SqlCommand command = new SqlCommand("SP_UpdateTestByTestID", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@TestResult", TestResult);
             command.Parameters.AddWithValue("@Notes", Notes);
             command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
             command.Parameters.AddWithValue("@TestID", TestID);
-
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             bool IsSuccess = false;
-            object Result;
+ 
             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    IsSuccess = (ID != 0);
-                }
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -255,33 +204,26 @@ FROM     Tests INNER JOIN
         }
         static public bool UpdateTestByTestAppointmentID(int TestAppointmentID, bool TestResult, string Notes, int CreatedByUserID)
         {
-
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-
-            string quere = @" UPDATE [dbo].[Tests]
-                                              SET   [TestResult] = @TestResult   
-                                                      ,[Notes] = @Notes  
-                                                      ,[CreatedByUserID] = @CreatedByUserID   
-                                      WHERE TestAppointmentID=@TestAppointmentID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+            SqlCommand command = new SqlCommand("SP_UpdateTestByTestAppointmentID", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@TestResult", TestResult);
             command.Parameters.AddWithValue("@Notes", Notes);
             command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
             command.Parameters.AddWithValue("@TestAppointmentID", TestAppointmentID);
-
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             bool IsSuccess = false;
-            object Result;
+
             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    IsSuccess = (ID != 0);
-                }
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -300,26 +242,22 @@ FROM     Tests INNER JOIN
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @"
-                                    DELETE FROM [dbo].[Tests]
-                                          WHERE TestID=@TestID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+             
+            SqlCommand command = new SqlCommand("SP_DeleteTestByTestID", connection);
+            command.CommandType= CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@TestID", TestID);
-
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             bool IsSuccess = false;
-            object Result;
-            try
+             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    IsSuccess = (ID != 0);
-                }
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
+
             }
             catch (Exception ex) { }
             finally
@@ -334,27 +272,24 @@ FROM     Tests INNER JOIN
         static public bool DeleteTestByTestAppointmentID(int TestAppointmentID)
         {
 
+
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-
-            string quere = @"
-                                    DELETE FROM [dbo].[Tests]
-                                          WHERE TestAppointmentID=@TestAppointmentID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+            SqlCommand command = new SqlCommand("SP_DeleteTestByTestAppointmentID", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@TestAppointmentID", TestAppointmentID);
-
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             bool IsSuccess = false;
-            object Result;
             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    IsSuccess = (ID != 0);
-                }
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
+
             }
             catch (Exception ex) { }
             finally
@@ -374,27 +309,23 @@ FROM     Tests INNER JOIN
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+             
 
-
-            string quere = @"SELECT Result =1 FROM     TestAppointments INNER JOIN
-                  Tests ON TestAppointments.TestAppointmentID = Tests.TestAppointmentID
-				 where LocalDrivingLicenseApplicationID=@LocalDrivingLicenseApplicationID  and TestTypeID=@TestTypeID and TestResult=1
-                 ORDER BY Tests.TestID DESC";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+            SqlCommand command = new SqlCommand("SP_IsLDLAppPassTest", connection);
+            command.CommandType= CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@LocalDrivingLicenseApplicationID", LocalDrivingLicenseApplicationID);
             command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
-
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             bool IsSuccess = false;
             try
             {
                 connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-                if (reader.Read())
-                {
-                    IsSuccess = true;
-                }
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
 
             }
             catch (Exception ex) { }
@@ -403,8 +334,8 @@ FROM     Tests INNER JOIN
                 connection.Close();
             }
 
-
             return IsSuccess;
+
 
         }
 
@@ -412,15 +343,9 @@ FROM     Tests INNER JOIN
         {
             int LDLApp = 0;
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @" SELECT TestCount= COUNT(*) FROM     Tests INNER JOIN
-                  TestAppointments ON Tests.TestAppointmentID = TestAppointments.TestAppointmentID
-				  where LocalDrivingLicenseApplicationID =@LocalDrivingLicenseApplicationID and TestResult=1
-                                                      ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+             
+            SqlCommand command = new SqlCommand("SP_GetPassedTests", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@LocalDrivingLicenseApplicationID", LocalDrivingLicenseApplicationID);
             bool IsRead = false;
 
@@ -429,11 +354,10 @@ FROM     Tests INNER JOIN
                 connection.Open();
                 SqlDataReader Reader = command.ExecuteReader();
 
-                while (Reader.Read())
+                if (Reader.Read())
                 {
                     IsRead = true;
                     LDLApp = (int)Reader["TestCount"];
-
 
                 }
             }

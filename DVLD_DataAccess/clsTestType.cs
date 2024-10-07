@@ -21,33 +21,29 @@ namespace DVLD_DataAccess
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-            string query = @"Insert Into TestTypes (TestTypeTitle,TestTypeTitle,TestTypeFees)
-                            Values (@TestTypeTitle,@TestTypeDescription,@ApplicationFees)
-                            where TestTypeID = @TestTypeID;
-                            SELECT SCOPE_IDENTITY();";
-
-            SqlCommand command = new SqlCommand(query, connection);
+            SqlCommand command = new SqlCommand("SP_AddNewTestType", connection);
+            command.CommandType = CommandType.StoredProcedure; ;
 
             command.Parameters.AddWithValue("@TestTypeTitle", Title);
             command.Parameters.AddWithValue("@TestTypeDescription", Description);
-            command.Parameters.AddWithValue("@ApplicationFees", Fees);
+            command.Parameters.AddWithValue("@TestTypeFees", Fees);
+            SqlParameter param = new SqlParameter("@TestTypeID", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(param);
 
             try
             {
                 connection.Open();
 
-                object result = command.ExecuteScalar();
-
-                if (result != null && int.TryParse(result.ToString(), out int insertedID))
-                {
-                    TestTypeID = insertedID;
-                }
+                 command.ExecuteNonQuery();
+                TestTypeID=(int)command.Parameters["@TestTypeID"].Value;
+ 
             }
 
             catch (Exception ex)
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-
+            { 
             }
 
             finally
@@ -66,23 +62,9 @@ namespace DVLD_DataAccess
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-
-            string quere = @" SELECT 
-                                                          [TestTypeID]
-                                                         ,[TestTypeTitle]
-                                                         ,[TestTypeDescription]
-                                                         ,[TestTypeFees]
-                                                     FROM [dbo].[TestTypes]
-                                                          where TestTypeID=@TestTypeID;
-                                                          ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
-            command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
-            command.Parameters.AddWithValue("@TestTypeTitle", TestTypeTitle);
-            command.Parameters.AddWithValue("@TestTypeDescription", TestTypeDescription);
-            command.Parameters.AddWithValue("@TestTypeFees", TestTypeFees);
-
+            SqlCommand command = new SqlCommand("SP_FindTestTypeByTestTypeID", connection);
+            command.CommandType = CommandType.StoredProcedure; ;
+            command.Parameters.AddWithValue("@TestTypeID", TestTypeID); 
             bool IsRead = false;
 
             try
@@ -90,15 +72,13 @@ namespace DVLD_DataAccess
                 connection.Open();
                 SqlDataReader Reader = command.ExecuteReader();
 
-                while (Reader.Read())
+                if (Reader.Read())
                 {
                     IsRead = true;
                     TestTypeID = (int)Reader["TestTypeID"];
                     TestTypeTitle = (string)Reader["TestTypeTitle"];
                     TestTypeDescription = (string)Reader["TestTypeDescription"];
                     TestTypeFees = Convert.ToSingle(Reader["TestTypeFees"]);
-
-
                 }
             }
             catch (Exception ex) { }
@@ -113,30 +93,30 @@ namespace DVLD_DataAccess
         }
 
         //================================================Update Fees==================================================================================
-        static public bool UpdateFeesByLicenseClassesID(int TestTypeID, string TestTypeTitle, string TestTypeDescription, float TestTypeFees)
+        static public bool UpdateByTestTypeID(int TestTypeID, string TestTypeTitle, string TestTypeDescription, float TestTypeFees)
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @" UPDATE [dbo].[TestTypes]
-                                               SET   [TestTypeTitle] = @TestTypeTitle 
-                                                        ,[TestTypeDescription] = @TestTypeDescription 
-                                                        ,[TestTypeFees] = @TestTypeFees 
-                                             WHERE  TestTypeID=@TestTypeID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+              
+            SqlCommand command = new SqlCommand("SP_UpdateTestTypeByTestTypeID", connection);
+            command.CommandType = CommandType.StoredProcedure;
 
             command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
             command.Parameters.AddWithValue("@TestTypeFees", TestTypeFees);
-
             command.Parameters.AddWithValue("@TestTypeTitle", TestTypeTitle);
             command.Parameters.AddWithValue("@TestTypeDescription", TestTypeDescription);
-            int Result = 0;
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output,
+            };
+            command.Parameters.Add(parameter);
+
+            bool Result =false;
             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
+                command.ExecuteNonQuery();
+                Result = (bool)command.Parameters["@IsSuccess"].Value;
 
             }
             catch (Exception ex) { }
@@ -146,7 +126,7 @@ namespace DVLD_DataAccess
             }
 
 
-            return Result != 0;
+            return Result;
 
         }
 
@@ -155,13 +135,9 @@ namespace DVLD_DataAccess
         static public DataTable GetAllTestTypes()
         {
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string query = "SELECT * FROM TestTypes order by TestTypeID";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-
+              
+            SqlCommand command = new SqlCommand("SP_GetAllTestTypes", connection);
+            command.CommandType= CommandType.StoredProcedure;
             DataTable dataTable = new DataTable();
             try
             {
@@ -171,8 +147,6 @@ namespace DVLD_DataAccess
                 if (Reader.HasRows)
                 {
                     dataTable.Load(Reader);
-
-
                 }
                 Reader.Close();
             }

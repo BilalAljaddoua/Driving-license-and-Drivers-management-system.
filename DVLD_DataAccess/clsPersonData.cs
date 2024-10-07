@@ -16,37 +16,8 @@ namespace DVLD_DataAccess
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-
-            string quere = @"INSERT INTO [dbo].[People]
-           ([NationalNo]
-           ,[FirstName]
-           ,[SecondName]
-           ,[ThirdName]
-           ,[LastName]
-           ,[DateOfBirth]
-           ,[Gendor]
-           ,[Address]
-           ,[Phone]
-           ,[Email]
-           ,[NationalityCountryID]
-           ,[ImagePath])
-     VALUES
-           (
-           @NationalNo, 
-           @FirstName,  
-           @SecondName, 
-           @ThirdName,  
-           @LastName,  
-           @DateOfBirth,  
-           @Gendor, 
-           @Address, 
-           @Phone,
-           @Email,  
-           @NationalityCountryID, 
-           @ImagePath  ) ; select SCOPE_IDENTITY()";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+            SqlCommand command = new SqlCommand("SP_AddPerson", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@NationalNo", NationalNo);
             command.Parameters.AddWithValue("@FirstName", FirstName);
             command.Parameters.AddWithValue("@SecondName", SecondName);
@@ -70,6 +41,11 @@ namespace DVLD_DataAccess
                 command.Parameters.AddWithValue("@ImagePath", ImagePath);
             else
                 command.Parameters.AddWithValue("@ImagePath", System.DBNull.Value);
+            SqlParameter parameter = new SqlParameter("@PersonID", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
 
 
 
@@ -78,11 +54,8 @@ namespace DVLD_DataAccess
             try
             {
                 connection.Open();
-                object Result = command.ExecuteScalar();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    PersonID = ID;
-                }
+                command.ExecuteScalar();
+                PersonID = (int)command.Parameters["@PersonID"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -101,28 +74,15 @@ namespace DVLD_DataAccess
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @" SELECT People.PersonID, People.NationalNo, People.FirstName, People.SecondName, People.ThirdName, People.LastName, People.DateOfBirth,
-case
-when Gendor = 0
-then 'Male'
-when Gendor=1
-then 'Female'
-end
-as Gendor
-, People.Address, People.Phone, People.Email, Countries.CountryName, 
-                  People.ImagePath
-FROM     Countries INNER JOIN
-                  People ON Countries.CountryID = People.NationalityCountryID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+             
+            SqlCommand command = new SqlCommand("SP_GetAllPeople", connection);
+            command.CommandType = CommandType.StoredProcedure;
             DataTable dataTable = new DataTable();
             try
             {
                 connection.Open();
                 SqlDataReader reader = command.ExecuteReader();
-                if (reader.Read())
+                if (reader.HasRows)
                 {
                     dataTable.Load(reader);
                 }
@@ -205,11 +165,9 @@ FROM     Countries INNER JOIN
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @" SELECT * from  People where PersonID = @PersonID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+ 
+            SqlCommand command = new SqlCommand("SP_FindPersonByID", connection);
+            command.CommandType = CommandType.StoredProcedure;
             bool IsRead = false;
             command.Parameters.AddWithValue("@PersonID", PersonID);
 
@@ -268,28 +226,12 @@ FROM     Countries INNER JOIN
         static public bool UpdatePerson(int PersonID, string NationalNo, string FirstName, string SecondName, string ThirdName, string LastName, DateTime DateOfBirth,
                                                                  short Gendor, string Address, string Phone, string Email, int NationalityCountryID, string ImagePath)
         {
-
-            int Result = 0;
+            bool IsSuccess = false;
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-
-            string quere = @"
-                                      UPDATE [dbo].[People]
-                                         SET [NationalNo] = NationalNo,
-                                               [FirstName] = @FirstName,
-                                               [SecondName] =@SecondName ,
-                                               [ThirdName] = @ThirdName ,
-                                               [LastName] = @LastName,  
-                                               [DateOfBirth] = @DateOfBirth,  
-                                               [Gendor] = @Gendor, 
-                                               [Address] = @Address,  
-                                               [Phone] = @Phone,  
-                                               [Email] = @Email,  
-                                               [NationalityCountryID] =@NationalityCountryID, 
-                                               [ImagePath] = @ImagePath 
-                                       WHERE PersonID=@PersonID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+             
+            SqlCommand command = new SqlCommand("SP_UpdatePerson", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@PersonID", PersonID);
 
             command.Parameters.AddWithValue("@NationalNo", NationalNo);
@@ -320,13 +262,17 @@ FROM     Countries INNER JOIN
             else
             {
                 command.Parameters.AddWithValue("@ImagePath", System.DBNull.Value);
-
             }
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-
+                 command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -335,7 +281,7 @@ FROM     Countries INNER JOIN
             }
 
 
-            return Result > 0;
+            return  IsSuccess;
 
         }
 
@@ -345,26 +291,22 @@ FROM     Countries INNER JOIN
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+             
 
-
-            string quere = @"
-                                DELETE FROM [dbo].[People]
-                             WHERE  NationalNo=@NationalNo";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+            SqlCommand command = new SqlCommand("SP_DeletePerson", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@NationalNo", NationalNo);
-
             bool IsSuccess = false;
-            object Result;
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    IsSuccess = (ID != 0);
-                }
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -384,60 +326,60 @@ FROM     Countries INNER JOIN
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @" select Found=1 from People
-                                            where NationalNo=@NationalNo
-";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+ 
+            SqlCommand command = new SqlCommand("SP_IsPersonExist", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@NationalNo", NationalNo);
-
-
-            bool IsFound = false;
+            bool IsSuccess = false;
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             try
             {
                 connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-                IsFound = reader.HasRows;
-                reader.Close();
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
             {
                 connection.Close();
             }
-            return IsFound;
+
+            return IsSuccess;
+
+
         }
 
         static public bool IsPersonExist(int PersonID)
         {
-
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-
-            string quere = @" select Found=1 from People
-                                            where PersonID=@PersonID
-";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+            SqlCommand command = new SqlCommand("SP_IsPersonExistByID", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@PersonID", PersonID);
-
-
-            bool IsFound = false;
+            bool IsSuccess = false;
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             try
             {
                 connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-                IsFound = reader.HasRows;
-                reader.Close();
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
             {
                 connection.Close();
             }
-            return IsFound;
+
+            return IsSuccess;
+
         }
 
 

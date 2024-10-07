@@ -71,7 +71,6 @@ namespace DVLD_DataAccess
                     MinimumAllowedAge = Convert.ToInt16(Reader["MinimumAllowedAge"]);
                     DefaultValidityLength = Convert.ToInt16(Reader["DefaultValidityLength"]);
                     ClassFees = Convert.ToSingle(Reader["ClassFees"]);
-                    LicenseClassID = Convert.ToInt16(Reader["LicenseClassID"]);
 
                 }
             }

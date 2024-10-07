@@ -100,19 +100,13 @@ namespace DVLD_Buisness
              UserID= clsUserData.AddUser( UserName,PersonID, Password, IsActive);
             return UserID != -1;
         }
-        static public bool DeleteUserByUserName(string UserName)
+        
+        static public bool DeleteUserByPersonID(int UserID)
         {
-            return clsUserData.DeleteUserByUserName(UserName);
-        }
-        static public bool DeleteUserByPersonID(int PersonID)
-        {
-            return clsUserData.DeleteUserByPersonID(PersonID);
+            return clsUserData.DeleteUserByPersonID(UserID);
         }
 
-        private bool _UpdateUserByUserName(string UserName, string NewUsername, string Password, bool IsActive)
-        {
-            return clsUserData.UpdateUserByUserName(UserName, NewUsername, Password, IsActive);
-        }
+        
         private bool _UpdateUserByUserID(int UserID, string UserName, string Password, bool IsActive)
         {
             return clsUserData.UpdateUserByUserID(UserID, UserName, Password, IsActive);
@@ -139,7 +133,7 @@ namespace DVLD_Buisness
                     }
                 case enMode.enUpdate:
                     {
-                        return _UpdateUserByUserID(PersonID, UserName, Password, IsActive);
+                        return _UpdateUserByUserID(UserID, UserName, Password, IsActive);
                     }
                 default: { return false; }
 

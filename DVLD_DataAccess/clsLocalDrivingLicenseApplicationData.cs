@@ -16,13 +16,10 @@ namespace DVLD_DataAccess
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+             
 
-
-            string quere = @"SELECT *
-                              FROM LocalDrivingLicenseApplications_View
-                              order by ApplicationDate Desc";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+            SqlCommand command = new SqlCommand("SP_GetAllLocalDrivingLicenseApplications", connection);
+            command.CommandType = CommandType.StoredProcedure;
             DataTable dt = new DataTable();
 
             try
@@ -47,38 +44,29 @@ namespace DVLD_DataAccess
             return dt;
 
         }
-
         //================================================Add New LocalDrivingLicenseApplications===================================================================================
         static public int AddLocalDrivingLicenseApplications(int ApplicationID, int LicenseClassID)
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @" INSERT INTO [dbo].[LocalDrivingLicenseApplications]
-                                                                          ([ApplicationID]
-                                                                          ,[LicenseClassID])
-                                                                    VALUES
-                                                                          (@ApplicationID,  
-                                                                           @LicenseClassID  );select SCOPE_IDENTITY(); ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+            
+            SqlCommand command = new SqlCommand("SP_AddLocalDrivingLicenseApplications", connection);
+            command.CommandType= CommandType.StoredProcedure;
 
             command.Parameters.AddWithValue("@ApplicationID", ApplicationID);
             command.Parameters.AddWithValue("@LicenseClassID", LicenseClassID);
-
-
-
-            object Result;
-            int NewID = -1;
+            SqlParameter parameter = new SqlParameter("@LocalDrivingLicenseApplicationID", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
+             
+            int LocalDrivingLicenseApplicationID = -1;
             try
             {
                 connection.Open();
-                Result = command.ExecuteScalar();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    NewID = ID;
-                }
+                 command.ExecuteNonQuery();
+                LocalDrivingLicenseApplicationID = (int)command.Parameters["@LocalDrivingLicenseApplicationID"].Value;
 
             }
             catch (Exception ex) { }
@@ -87,30 +75,19 @@ namespace DVLD_DataAccess
                 connection.Close();
             }
 
-            return NewID;
+            return LocalDrivingLicenseApplicationID;
 
 
         }
-
         //================================================Find LocalDrivingLicenseApplications==================================================================================
         static public bool FindByLocalDrivingLicenseApplicationID(int LocalDrivingLicenseApplicationID, ref int ApplicationID, ref int LicenseClassID)
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @"  SELECT LocalDrivingLicenseApplicationID
-                                                           ,[ApplicationID]
-                                                           ,[LicenseClassID]
-                                          FROM [dbo].[LocalDrivingLicenseApplications]
-                                  WHERE [LocalDrivingLicenseApplicationID]=@LocalDrivingLicenseApplicationID
-   ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
-            command.Parameters.AddWithValue("@ApplicationID  ", ApplicationID);
-            command.Parameters.AddWithValue("@LicenseClassID  ", LicenseClassID);
-            command.Parameters.AddWithValue("@LocalDrivingLicenseApplicationID  ", LocalDrivingLicenseApplicationID);
+             
+            SqlCommand command = new SqlCommand("SP_FindByLocalDrivingLicenseApplicationID", connection);
+            command.CommandType = CommandType.StoredProcedure; 
+            command.Parameters.AddWithValue("@LocalDrivingLicenseApplicationID", LocalDrivingLicenseApplicationID);
 
 
             bool IsRead = false;
@@ -143,20 +120,11 @@ namespace DVLD_DataAccess
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+             
 
-
-            string quere = @"  SELECT LocalDrivingLicenseApplicationID
-                                                           ,[ApplicationID]
-                                                           ,[LicenseClassID]
-                                          FROM [dbo].[LocalDrivingLicenseApplications]
-                                  WHERE [ApplicationID]=@ApplicationID
-   ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
-            command.Parameters.AddWithValue("@ApplicationID  ", ApplicationID);
-            command.Parameters.AddWithValue("@LicenseClassID  ", LicenseClassID);
-            command.Parameters.AddWithValue("@LocalDrivingLicenseApplicationID  ", LocalDrivingLicenseApplicationID);
+            SqlCommand command = new SqlCommand("SP_FindByApplicationID", connection);
+            command.CommandType= CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@ApplicationID", ApplicationID); 
 
 
             bool IsRead = false;
@@ -185,35 +153,27 @@ namespace DVLD_DataAccess
             return IsRead;
 
         }
-
         //================================================Update LocalDrivingLicenseApplications==================================================================================
-        static public bool UpdateByLocalDrivingLicenseApplicationID(int LocalDrivingLicenseApplicationID, int ApplicationID, int LicenseClassID)
+        static public bool UpdateLDLAByLDLA_ID(int LocalDrivingLicenseApplicationID, int ApplicationID, int LicenseClassID)
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @" UPDATE [dbo].[LocalDrivingLicenseApplications]
-                                                                    SET 
-                                                                       [LicenseClassID] = @LicenseClassID 
-                                                                  WHERE  LocalDrivingLicenseApplicationID=@LocalDrivingLicenseApplicationID     ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
-            command.Parameters.AddWithValue("@ApplicationID ", ApplicationID);
+             
+            SqlCommand command = new SqlCommand("SP_UpdateLDLAByLDLA_ID", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@LocalDrivingLicenseApplicationID", LocalDrivingLicenseApplicationID);
             command.Parameters.AddWithValue("@LicenseClassID", LicenseClassID);
-
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             bool IsSuccess = false;
-            object Result;
-            try
+             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    IsSuccess = (ID != 0);
-                }
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -225,42 +185,26 @@ namespace DVLD_DataAccess
             return IsSuccess;
 
         }
-
         //================================================Delete LocalDrivingLicenseApplications==================================================================================
-
         static public bool DeleteByLocalDrivingLicenseApplicationID(int LocalDrivingLicenseApplicationID)
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @"					 delete from Tests 
-					 where TestAppointmentID in(SELECT Tests.TestAppointmentID
-FROM     TestAppointments INNER JOIN
-                  LocalDrivingLicenseApplications ON TestAppointments.LocalDrivingLicenseApplicationID = LocalDrivingLicenseApplications.LocalDrivingLicenseApplicationID INNER JOIN
-                  Tests ON TestAppointments.TestAppointmentID = Tests.TestAppointmentID
-				 
-				     where TestAppointments.LocalDrivingLicenseApplicationID =@LocalDrivingLicenseApplicationID)
-
-					 delete from dbo.TestAppointments
-					 where LocalDrivingLicenseApplicationID=@LocalDrivingLicenseApplicationID
-					 delete from dbo.LocalDrivingLicenseApplications
-					 where LocalDrivingLicenseApplicationID=@LocalDrivingLicenseApplicationID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+             
+            SqlCommand command = new SqlCommand("SP_DeleteByLocalDrivingLicenseApplicationID", connection);
+            command.CommandType= CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@LocalDrivingLicenseApplicationID", LocalDrivingLicenseApplicationID);
-
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             bool IsSuccess = false;
-            object Result;
-            try
+             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    IsSuccess = (ID != 0);
-                }
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -272,41 +216,28 @@ FROM     TestAppointments INNER JOIN
 
 
         }
-
         //==============================================================================================================================
         static public bool DosePassTesttype(  int LocalDrivingLicenseApplicationID,   int TestTypeID)
-
         {
-
-
-            bool Result = false;
-
+              
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+             
 
-            string query = @" SELECT top 1 TestResult
-                            FROM LocalDrivingLicenseApplications INNER JOIN
-                                 TestAppointments ON LocalDrivingLicenseApplications.LocalDrivingLicenseApplicationID = TestAppointments.LocalDrivingLicenseApplicationID INNER JOIN
-                                 Tests ON TestAppointments.TestAppointmentID = Tests.TestAppointmentID
-                            WHERE
-                            (LocalDrivingLicenseApplications.LocalDrivingLicenseApplicationID = @LocalDrivingLicenseApplicationID) 
-                            AND(TestAppointments.TestTypeID = @TestTypeID)
-                            ORDER BY TestAppointments.TestAppointmentID desc";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
+            SqlCommand command = new SqlCommand("SP_DosePassTesttype", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@LocalDrivingLicenseApplicationID", LocalDrivingLicenseApplicationID);
             command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
-
+            bool IsSuccess = false;
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             try
             {
                 connection.Open();
-
-                object result = command.ExecuteScalar();
-
-                if (result != null && bool.TryParse(result.ToString(), out bool returnedResult))
-                {
-                    Result = returnedResult;
-                }
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;               
             }
 
             catch (Exception ex)
@@ -320,39 +251,32 @@ FROM     TestAppointments INNER JOIN
                 connection.Close();
             }
 
-            return Result;
+            return IsSuccess;
 
         }
-
         static public int HowNumberTrials(int LDLApp, int TestTypeID)
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-
-            string quere = @"SELECT COUNT(*) AS Count
-                                                                    FROM     LocalDrivingLicenseApplications INNER JOIN
-                                                                                      TestAppointments ON LocalDrivingLicenseApplications.LocalDrivingLicenseApplicationID = TestAppointments.LocalDrivingLicenseApplicationID INNER JOIN
-                                                                                      Tests ON TestAppointments.TestAppointmentID = Tests.TestAppointmentID
-                                                                    WHERE  (TestAppointments.LocalDrivingLicenseApplicationID = @LDLApp) AND (TestAppointments.TestTypeID = @TestTypeID)";
-            SqlCommand command = new SqlCommand(quere, connection);
+            SqlCommand command = new SqlCommand("SP_HowNumberTrials", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@LDLApp", LDLApp);
             command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
+            SqlParameter parameter = new SqlParameter("@CountTrial", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
 
 
 
             int CountTrial = -1;
-            object Result;
-            try
+             try
             {
                 connection.Open();
-
-                Result = command.ExecuteScalar();
-                if (Result != null && int.TryParse(Result.ToString(), out int Count))
-                {
-                    CountTrial = Count;
-                }
-
+                command.ExecuteNonQuery();
+                CountTrial = (int)command.Parameters["@CountTrial"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -364,31 +288,28 @@ FROM     TestAppointments INNER JOIN
 
 
         }
-
-        static public bool IsthereAnActiveAppintmentWithTest(int LocalDrivingLicenseApplicationID, int TestTypeID)
+        static public bool IsThereActiveAppintmentWithTest(int LocalDrivingLicenseApplicationID, int TestTypeID)
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @"SELECT   Found =1
-FROM     TestAppointments INNER JOIN
-                  TestTypes ON TestAppointments.TestTypeID = TestTypes.TestTypeID
-WHERE  (TestAppointments.LocalDrivingLicenseApplicationID = @LocalDrivingLicenseApplicationID) AND (TestTypes.TestTypeID = @TestTypeID) AND (TestAppointments.IsLocked = 0)";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
-            command.Parameters.AddWithValue("@TestTypeID  ", TestTypeID);
-            command.Parameters.AddWithValue("@LocalDrivingLicenseApplicationID  ", LocalDrivingLicenseApplicationID);
-
+             
+            SqlCommand command = new SqlCommand("SP_IsThereActiveAppintmentWithTest", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
+            command.Parameters.AddWithValue("@LocalDrivingLicenseApplicationID", LocalDrivingLicenseApplicationID);
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
 
             bool IsFound = false;
 
             try
             {
                 connection.Open();
-                SqlDataReader Reader = command.ExecuteReader();
-                IsFound = Reader.HasRows;
+                 command.ExecuteNonQuery();
+                IsFound = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -400,36 +321,29 @@ WHERE  (TestAppointments.LocalDrivingLicenseApplicationID = @LocalDrivingLicense
             return IsFound;
 
         }
-
         static public int GetActiveLicenseID(int LDLApp,int LicenseClass )
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @"  SELECT LicenseID
-FROM     LocalDrivingLicenseApplications INNER JOIN
-                  LicenseClasses ON LocalDrivingLicenseApplications.LicenseClassID = LicenseClasses.LicenseClassID INNER JOIN
-                  Licenses ON LicenseClasses.LicenseClassID = Licenses.LicenseClass
-				  where LocalDrivingLicenseApplications.LocalDrivingLicenseApplicationID=@LDLApp and LicenseClass=@LicenseClass";
-            SqlCommand command = new SqlCommand(quere, connection);
+             
+            SqlCommand command = new SqlCommand("SP_GetActiveLicenseID", connection);
+            command.CommandType= CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@LDLApp", LDLApp);
              command.Parameters.AddWithValue("@LicenseClass", LicenseClass);
-
+            SqlParameter parameter = new SqlParameter("@LicenseID", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            }; 
+            command.Parameters.Add(parameter);
 
 
             int LiceneID = -1;
-            object Result;
-            try
+             try
             {
                 connection.Open();
 
-                Result = command.ExecuteScalar();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    LiceneID = ID;
-                }
-
+                    command.ExecuteNonQuery();
+                    LiceneID=(int)command.Parameters["@LiceneID"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -441,7 +355,8 @@ FROM     LocalDrivingLicenseApplications INNER JOIN
 
 
         }
-
-
+       
+    
+    
     }
 }

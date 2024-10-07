@@ -115,7 +115,7 @@ namespace DVLD_Buisness
         private bool _UpdateUserByLicenseID()
         {
 
-            return clsLicenseData.UpdateUserByLicenseID(LicenseID, ApplicationID, DriverID, LicenseClassID, IssueDate, ExpirationDate, Notes, PaidFees, IsActive,  (int)IssueReason, CreatedByUserID);
+            return clsLicenseData.UpdateLicensesByLicenseID(LicenseID, ApplicationID, DriverID, LicenseClassID, IssueDate, ExpirationDate, Notes, PaidFees, IsActive,  (int)IssueReason, CreatedByUserID);
 
 
         }

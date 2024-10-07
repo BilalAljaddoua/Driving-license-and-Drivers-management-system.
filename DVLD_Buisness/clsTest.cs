@@ -36,9 +36,11 @@ namespace DVLD_Buisness
             _Mode = enMode.enUpdate;
         }
 
-        static private bool _AddNewTests(int TestAppointmentID, bool TestResult, string Notes, int CreatedByUserID)
+          private bool _AddNewTests(int TestAppointmentID, bool TestResult, string Notes, int CreatedByUserID)
         {
-            return clsTestData.AddTests(TestAppointmentID, TestResult, Notes, CreatedByUserID);
+            TestID = -1;
+           this.TestID= clsTestData.AddTest(TestAppointmentID, TestResult, Notes, CreatedByUserID);
+            return this.TestID != -1;
         }
         static public clsTest FindTestByTestID(int TestID)
         {
