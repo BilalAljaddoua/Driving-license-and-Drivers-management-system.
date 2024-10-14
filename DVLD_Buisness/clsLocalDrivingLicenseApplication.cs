@@ -90,9 +90,9 @@ namespace DVLD_Buisness
         {
             return clsLocalDrivingLicenseApplicationData.UpdateLDLAByLDLA_ID(LocalDrivingLicenseApplicationID, ApplicationID, LicenseClassID);
         }
-        static public bool DeleteByLocalDrivingLicenseApplicationID(int LocalDrivingLicenseApplicationID)
+        static public bool DeleteByLocalDrivingLicenseApplicationID(int LocalDrivingLicenseApplicationID,int UserID)
         {
-            return clsLocalDrivingLicenseApplicationData.DeleteByLocalDrivingLicenseApplicationID(LocalDrivingLicenseApplicationID);
+            return clsLocalDrivingLicenseApplicationData.DeleteByLocalDrivingLicenseApplicationID(LocalDrivingLicenseApplicationID,UserID);
         }
         static public int GetActiveApplicationIDForLicenseClass(int PersonID, clsApplication.enApplicationType ApplicationType, int LicenseClassID)
         {

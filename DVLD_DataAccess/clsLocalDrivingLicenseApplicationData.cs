@@ -186,7 +186,7 @@ namespace DVLD_DataAccess
 
         }
         //================================================Delete LocalDrivingLicenseApplications==================================================================================
-        static public bool DeleteByLocalDrivingLicenseApplicationID(int LocalDrivingLicenseApplicationID)
+        static public bool DeleteByLocalDrivingLicenseApplicationID(int LocalDrivingLicenseApplicationID,int UserID)
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
@@ -194,6 +194,7 @@ namespace DVLD_DataAccess
             SqlCommand command = new SqlCommand("SP_DeleteByLocalDrivingLicenseApplicationID", connection);
             command.CommandType= CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@LocalDrivingLicenseApplicationID", LocalDrivingLicenseApplicationID);
+            command.Parameters.AddWithValue("@UserID", UserID);
             SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
             {
                 Direction = ParameterDirection.Output
@@ -343,7 +344,7 @@ namespace DVLD_DataAccess
                 connection.Open();
 
                     command.ExecuteNonQuery();
-                    LiceneID=(int)command.Parameters["@LiceneID"].Value;
+                    LiceneID=(int)command.Parameters["@LicenseID"].Value;
             }
             catch (Exception ex) { }
             finally

@@ -17,18 +17,10 @@ namespace DVLD_DataAccess
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+             
 
-
-            string quere = @" SELECT Drivers.DriverID, People.PersonID, People.NationalNo,
-      CONCAT(People.FirstName, ' ', People.SecondName, ' ', People.ThirdName, ' ', People.LastName) As FullName
-      , Drivers.CreatedDate ,
-      (SELECT COUNT(LicenseClass)
-       FROM Licenses 
-       WHERE Drivers.DriverID = Licenses.DriverID) As LicensesCount
-FROM People 
-INNER JOIN Drivers ON People.PersonID = Drivers.PersonID order by DriverID desc";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+            SqlCommand command = new SqlCommand("SP_GetAllDrivers", connection);
+            command.CommandType = CommandType.StoredProcedure;
             DataTable dt = new DataTable();
             try
             {
@@ -56,14 +48,9 @@ INNER JOIN Drivers ON People.PersonID = Drivers.PersonID order by DriverID desc"
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @" SELECT Licenses.LicenseID, Licenses.ApplicationID, LicenseClasses.ClassName, Licenses.IssueDate, Licenses.ExpirationDate, Licenses.IsActive
-FROM     Licenses INNER JOIN
-                  LicenseClasses ON Licenses.LicenseClass = LicenseClasses.LicenseClassID
-WHERE  (Licenses.DriverID = @DriverID) order by LicenseID desc";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+             
+            SqlCommand command = new SqlCommand("SP_GetLocalLicense", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@DriverID", DriverID);
             DataTable dt = new DataTable();
             try
@@ -91,16 +78,9 @@ WHERE  (Licenses.DriverID = @DriverID) order by LicenseID desc";
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @"SELECT InternationalLicenses.InternationalLicenseID, Licenses.ApplicationID, Licenses.LicenseID, InternationalLicenses.IssueDate, InternationalLicenses.ExpirationDate, InternationalLicenses.IsActive
-FROM     LicenseClasses INNER JOIN
-                  Licenses ON LicenseClasses.LicenseClassID = Licenses.LicenseClass INNER JOIN
-                  InternationalLicenses ON Licenses.LicenseID = InternationalLicenses.IssuedUsingLocalLicenseID
-				  where InternationalLicenses.DriverID=@DriverID
-				  order by LicenseID desc;";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+             
+            SqlCommand command = new SqlCommand("SP_GetInternationalLicenses", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@DriverID", DriverID);
             DataTable dt = new DataTable();
             try
@@ -129,14 +109,10 @@ FROM     LicenseClasses INNER JOIN
         { 
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-        string quere = @"select PersonID from [dbo].[Drivers] 
-                                        where DriverID=@DriverID";
-
-        SqlCommand command = new SqlCommand(quere, connection);
-
-        command.Parameters.AddWithValue("@DriverID", DriverID);
+             
+        SqlCommand command = new SqlCommand("SP_GetPersonID", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@DriverID", DriverID);
             int PersonID = -1;
 
             try
@@ -144,11 +120,9 @@ FROM     LicenseClasses INNER JOIN
                 connection.Open();
                 SqlDataReader Reader = command.ExecuteReader();
 
-                while (Reader.Read())
+                if (Reader.Read())
                 {
                      PersonID = (int) Reader["PersonID"]; 
-
-
                  }
                 Reader.Close();
             }
@@ -167,32 +141,24 @@ return PersonID;
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @"INSERT INTO [dbo].[Drivers]
-                                                                          ([PersonID]
-                                                                         ,[CreatedByUserID]
-                                                                         ,[CreatedDate])
-                                                                   VALUES
-                                                                         (@PersonID,  
-                                                                          @CreatedByUserID, 
-                                                                          @CreatedDate ) ;SELECT SCOPE_IDENTITY(); ";
-            SqlCommand command = new SqlCommand(quere, connection);
+             
+            SqlCommand command = new SqlCommand("SP_AddDriver", connection);
+            command.CommandType = CommandType.StoredProcedure;
 
             command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
             command.Parameters.AddWithValue("@CreatedDate", CreatedDate);
             command.Parameters.AddWithValue("@PersonID", PersonID);
-
+            SqlParameter parameter = new SqlParameter("@DriverID", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             int DriverID = -1;
-            object Result;
             try
             {
                 connection.Open();
-                Result = command.ExecuteScalar();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    DriverID = ID;
-                }
+                command.ExecuteNonQuery();
+                DriverID = (int)command.Parameters["@DriverID"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -201,6 +167,7 @@ return PersonID;
             }
 
 
+ 
             return DriverID;
 
         }
@@ -210,12 +177,10 @@ return PersonID;
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+             
 
-
-            string quere = @"select * from [dbo].[Drivers] 
-                                        where DriverID=@DriverID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+            SqlCommand command = new SqlCommand("SP_FindDriverByDriverID", connection);
+            command.CommandType = CommandType.StoredProcedure;
 
             command.Parameters.AddWithValue("@DriverID", DriverID);
             bool IsRead = false;
@@ -225,15 +190,14 @@ return PersonID;
                 connection.Open();
                 SqlDataReader Reader = command.ExecuteReader();
 
-                while (Reader.Read())
+                if (Reader.Read())
                 {
                     IsRead = true;
                     PersonID = (int)Reader["PersonID"];
                     CreatedByUserID = (int)Reader["CreatedByUserID"];
                     CreatedDate = (DateTime)Reader["CreatedDate"];
-
-
-                }
+               }
+                Reader.Close();
             }
             catch (Exception ex) { }
             finally
@@ -250,13 +214,10 @@ return PersonID;
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
+            SqlCommand command = new SqlCommand("SP_FindDriverByPersonID", connection);
+            command.CommandType = CommandType.StoredProcedure;
 
-            string quere = @"select * from [dbo].[Drivers] 
-                                        where PersonID=@PersonID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
-            command.Parameters.AddWithValue("@PersonID", PersonID);
+            command.Parameters.AddWithValue("@PersonID",  PersonID);
             bool IsRead = false;
 
             try
@@ -264,15 +225,14 @@ return PersonID;
                 connection.Open();
                 SqlDataReader Reader = command.ExecuteReader();
 
-                while (Reader.Read())
+                if (Reader.Read())
                 {
                     IsRead = true;
                     DriverID = (int)Reader["DriverID"];
                     CreatedByUserID = (int)Reader["CreatedByUserID"];
                     CreatedDate = (DateTime)Reader["CreatedDate"];
-
-
                 }
+                Reader.Close();
             }
             catch (Exception ex) { }
             finally
@@ -282,21 +242,15 @@ return PersonID;
 
 
             return IsRead;
-
         }
         static public bool FindDriverNationalNo(string NationalNo, ref int DriverID, ref int PersonID, ref int CreatedByUserID, ref DateTime CreatedDate)
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+             
 
-
-            string quere = @" SELECT *
-                                          FROM     Drivers INNER JOIN
-                  People ON Drivers.PersonID = People.PersonID
-				  where People.NationalNo=@NationalNo";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+            SqlCommand command = new SqlCommand("SP_FindDriverByNationalNo", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@NationalNo", NationalNo);
             bool IsRead = false;
 
@@ -305,7 +259,7 @@ return PersonID;
                 connection.Open();
                 SqlDataReader Reader = command.ExecuteReader();
 
-                while (Reader.Read())
+                if (Reader.Read())
                 {
                     IsRead = true;
                     DriverID = (int)Reader["DriverID"];
@@ -313,8 +267,8 @@ return PersonID;
                     CreatedDate = (DateTime)Reader["CreatedDate"];
                     PersonID = (int)Reader["PersonID"];
 
-
                 }
+                Reader.Close ();
             }
             catch (Exception ex) { }
             finally
@@ -332,30 +286,25 @@ return PersonID;
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+             
 
-
-            string quere = @"UPDATE [dbo].[Drivers]
-                                                                SET  
-                                                                       [CreatedByUserID] = @CreatedByUserID,  
-                                                                      ,[CreatedDate] = @CreatedDate, 
-                                                   WHERE PersonID=@PersonID ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+            SqlCommand command = new SqlCommand("SP_UpdateDriverByPersonID", connection);
+            command.CommandType = CommandType.StoredProcedure;
 
             command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
             command.Parameters.AddWithValue("@CreatedDate", CreatedDate);
             command.Parameters.AddWithValue("@PersonID", PersonID);
-
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             bool IsSuccess = false;
-            object Result;
             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    IsSuccess = (ID != 0);
-                }
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -365,36 +314,31 @@ return PersonID;
 
 
             return IsSuccess;
+
 
         }
         static public bool UpdateDriverByDriverID(int DriverID, int CreatedByUserID, DateTime CreatedDate)
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @"UPDATE [dbo].[Drivers]
-                                                                SET  
-                                                                      ,[CreatedByUserID] = @CreatedByUserID,  
-                                                                      ,[CreatedDate] = @CreatedDate, 
-                                                   WHERE DriverID=@DriverID ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+             
+            SqlCommand command = new SqlCommand("SP_UpdateDriverByDriverID", connection);
+            command.CommandType = CommandType.StoredProcedure;
 
             command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
             command.Parameters.AddWithValue("@CreatedDate", CreatedDate);
             command.Parameters.AddWithValue("@DriverID", DriverID);
-
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             bool IsSuccess = false;
-            object Result;
             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    IsSuccess = (ID != 0);
-                }
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -404,6 +348,8 @@ return PersonID;
 
 
             return IsSuccess;
+
+
 
         }
 
@@ -411,28 +357,24 @@ return PersonID;
 
         static public bool DeleteDriverByPersonID(int PersonID)
         {
-
+            
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @"
-                                    DELETE FROM [dbo].[Drivers]
-                                          WHERE PersonID=@PersonID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+             
+            SqlCommand command = new SqlCommand("SP_DeleteDriverByPersonID", connection);
+            command.CommandType = CommandType.StoredProcedure;
+             
             command.Parameters.AddWithValue("@PersonID", PersonID);
-
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             bool IsSuccess = false;
-            object Result;
             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    IsSuccess = (ID != 0);
-                }
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -440,34 +382,29 @@ return PersonID;
                 connection.Close();
             }
 
-            return IsSuccess;
 
+            return IsSuccess;
 
         }
         static public bool DeleteDriverByDriverID(int DriverID)
         {
-
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
+            SqlCommand command = new SqlCommand("SP_DeleteDriverByDriverID", connection);
+            command.CommandType = CommandType.StoredProcedure;
 
-            string quere = @"
-                                    DELETE FROM [dbo].[Users]
-                                          WHERE DriverID=@DriverID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
-            command.Parameters.AddWithValue("@Drivers", DriverID);
-
+            command.Parameters.AddWithValue("@DriverID", DriverID);
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             bool IsSuccess = false;
-            object Result;
             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    IsSuccess = (ID != 0);
-                }
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -475,9 +412,8 @@ return PersonID;
                 connection.Close();
             }
 
+
             return IsSuccess;
-
-
         }
 
 

@@ -22,6 +22,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+        <LangVersion>8.0</LangVersion>
+        <Nullable>enable</Nullable>
+
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,6 +34,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ConfigParser, Version=0.3.2.8, Culture=neutral, processorArchitecture=MSIL">
@@ -211,6 +215,12 @@
     </Compile>
     <Compile Include="frmTraying.Designer.cs">
       <DependentUpon>frmTraying.cs</DependentUpon>
+    </Compile>
+    <Compile Include="System Logs\frmDeleteLogs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="System Logs\frmDeleteLogs.Designer.cs">
+      <DependentUpon>frmDeleteLogs.cs</DependentUpon>
     </Compile>
     <Compile Include="User\ctrlUserCard.cs">
       <SubType>UserControl</SubType>
@@ -402,6 +412,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmTraying.resx">
       <DependentUpon>frmTraying.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="System Logs\frmDeleteLogs.resx">
+      <DependentUpon>frmDeleteLogs.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="User\ctrlUserCard.resx">
       <DependentUpon>ctrlUserCard.cs</DependentUpon>
@@ -821,6 +834,39 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Notes 321.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Autograph.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Autograph1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Autograph2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Autograph3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Autograph4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Trash Can.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Trash Can1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Available Updates.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Add New.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Enter.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Add Fingerprint.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -12,6 +12,7 @@ using DVLD.Licenses.International_License;
 using DVLD.Licenses.International_Licenses;
 using DVLD.Login;
 using DVLD.People;
+using DVLD.System_Logs;
 using DVLD.Tests;
 using DVLD.User;
 using DVLD_Buisness;
@@ -185,6 +186,12 @@ namespace DVLD
         private void oNewDrivingLicenseToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void deleteLogsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmDeleteLogs frm=new frmDeleteLogs();
+            frm.ShowDialog();
         }
     }
 }

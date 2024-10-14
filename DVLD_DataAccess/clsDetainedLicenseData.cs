@@ -19,10 +19,8 @@ namespace DVLD_DataAccess
             DataTable dt = new DataTable();
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-            string query = "select * from detainedLicenses_View order by IsReleased ,DetainID;";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
+            SqlCommand command = new SqlCommand("SP_GetAllDetainedLicenses", connection);
+            command.CommandType = CommandType.StoredProcedure;
             try
             {
                 connection.Open();
@@ -57,30 +55,9 @@ namespace DVLD_DataAccess
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @" 
-                                               INSERT INTO [dbo].[DetainedLicenses]
-                                                          ([LicenseID]
-                                                          ,[DetainDate]
-                                                          ,[FineFees]
-                                                          ,[CreatedByUserID]
-                                                          ,[IsReleased]
-                                                          ,[ReleaseDate]
-                                                          ,[ReleasedByUserID]
-                                                          ,[ReleaseApplicationID])
-                                                    VALUES
-                                                         (  
-                                                          @LicenseID,
-                                                          @DetainDate,   
-                                                          @FineFees,  
-                                                          @CreatedByUserID, 
-                                                          @IsReleased,  
-                                                          @ReleaseDate,  
-                                                          @ReleasedByUserID, 
-                                                          @ReleaseApplicationID )
-                                                          select SCOPE_IDENTITY(); ";
-            SqlCommand command = new SqlCommand(quere, connection);
+             
+            SqlCommand command = new SqlCommand("SP_AddDetainedLicenses", connection);
+            command.CommandType= CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@LicenseID", LicenseID);
             command.Parameters.AddWithValue("@DetainDate", DetainDate);
             command.Parameters.AddWithValue("@FineFees", FineFees);
@@ -100,19 +77,19 @@ namespace DVLD_DataAccess
             else
                 command.Parameters.AddWithValue("@ReleaseApplicationID", System.DBNull.Value);
 
-
+            SqlParameter parameter = new SqlParameter("@ID", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
 
 
             int DetainID = -1;
             try
             {
                 connection.Open();
-                object Result;
-              Result=    command.ExecuteScalar();
-                if (Result != null&&int.TryParse(Result.ToString(),out int ID))
-                {
-                    DetainID= ID;
-                }
+                command.ExecuteNonQuery();
+                DetainID = (int)command.Parameters["@ID"].Value;
 
             }
             catch (Exception ex) { }
@@ -131,13 +108,9 @@ namespace DVLD_DataAccess
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @"select * from [dbo].[DetainedLicenses]
-                                         WHERE LicenseID=@LicenseID          ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+             
+            SqlCommand command = new SqlCommand("SP_FindByLicenseID", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@LicenseID", LicenseID);
             bool IsRead = false;
 
@@ -146,12 +119,9 @@ namespace DVLD_DataAccess
                 connection.Open();
                 SqlDataReader Reader = command.ExecuteReader();
 
-                while (Reader.Read())
+                if (Reader.Read())
                 {
                     IsRead = true;
-
-
-
                     DetainID  = Convert.ToInt32(Reader["DetainID"]);
                     LicenseID = Convert.ToInt32(Reader["LicenseID"]);
                     DetainDate = (DateTime)Reader["DetainDate"];
@@ -184,21 +154,9 @@ namespace DVLD_DataAccess
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @"UPDATE [dbo].[DetainedLicenses]
-                                                           SET      
-                                                                       [DetainDate] = @DetainDate 
-                                                                      ,[FineFees] = @FineFees 
-                                                                      ,[CreatedByUserID] = @CreatedByUserID 
-                                                                      ,[IsReleased] = @IsReleased 
-                                                                      ,[ReleaseDate] = @ReleaseDate 
-                                                                      ,[ReleasedByUserID] = @ReleasedByUserID 
-                                                                      ,[ReleaseApplicationID] = @ReleaseApplicationID 
-                                                               WHERE   LicenseID  =@LicenseID  ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+ 
+            SqlCommand command = new SqlCommand("SP_UpdateDetainedLicensesByDetainedID", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@LicenseID", LicenseID);
             command.Parameters.AddWithValue("@DetainDate", DetainDate);
             command.Parameters.AddWithValue("@FineFees", FineFees);
@@ -207,17 +165,17 @@ namespace DVLD_DataAccess
             command.Parameters.AddWithValue("@ReleaseDate", ReleaseDate);
             command.Parameters.AddWithValue("@ReleasedByUserID", ReleasedByUserID);
             command.Parameters.AddWithValue("@ReleaseApplicationID", ReleaseApplicationID);
-
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             bool IsSuccess = false;
-            object Result;
             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    IsSuccess = (ID != 0);
-                }
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -228,6 +186,7 @@ namespace DVLD_DataAccess
 
             return IsSuccess;
 
+
         }
 
         //================================================Delete Detained==================================================================================
@@ -235,32 +194,29 @@ namespace DVLD_DataAccess
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+             
 
-
-            string quere = @"
-                                    DELETE FROM [dbo].[DetainedLicenses]
-                                          WHERE DetainID=@DetainID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+            SqlCommand command = new SqlCommand("SP_DeleteDetainedLicensesByDetainedID", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@DetainID", DetainID);
-
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             bool IsSuccess = false;
-            object Result;
             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    IsSuccess = (ID != 0);
-                }
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
             {
                 connection.Close();
             }
+
 
             return IsSuccess;
 
@@ -272,21 +228,21 @@ namespace DVLD_DataAccess
             {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @"select Found=1  from [dbo].[DetainedLicenses]
-                                         WHERE LicenseID=@LicenseID  and IsReleased=0        ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+             
+            SqlCommand command = new SqlCommand("SP_IsLisenseDetained", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@LicenseID", LicenseID);
-            bool IsRead = false;
-
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
+            bool IsSuccess = false;
             try
             {
                 connection.Open();
-                SqlDataReader Reader = command.ExecuteReader();
-                IsRead = Reader.HasRows;
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -295,7 +251,7 @@ namespace DVLD_DataAccess
             }
 
 
-            return IsRead;
+            return IsSuccess;
 
         }
 

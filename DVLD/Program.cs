@@ -1,6 +1,7 @@
 ﻿using DVLD.Applications;
 using DVLD.Applications.International_License;
 using DVLD.Login;
+using DVLD.System_Logs;
 using DVLD.Tests;
 using System;
 using System.Collections.Generic;
@@ -20,8 +21,8 @@ namespace DVLD
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            // Application.Run(new frmInternationalLicenseApplication());
-            //      Application.Run(new frmTraying());
+            //Application.Run(new frmDeleteLogs());
+
 
             bool IsReLogin = false;
             do

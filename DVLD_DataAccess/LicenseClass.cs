@@ -12,7 +12,7 @@ using System.Security.Policy;
 namespace DVLD_DataAccess
 {
     public class clsLicenseClassData
-    {
+    { 
         //================================================Find LicenseClass==================================================================================
         static public DataTable GetAllLicenseClass()
         {

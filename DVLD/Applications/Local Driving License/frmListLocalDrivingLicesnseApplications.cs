@@ -1,4 +1,5 @@
-﻿using DVLD.DriverLicense;
+﻿using DVLD.Classes;
+using DVLD.DriverLicense;
 using DVLD.Licenses.International_License;
 using DVLD.Licenses.Local_Licenses;
 using DVLD.Tests;
@@ -212,7 +213,7 @@ namespace DVLD.Applications.Local_Driving_License
             int ID = (int)dgvLocalDrivingLicenseApplications.CurrentRow.Cells[0].Value;
             if (MessageBox.Show("Are you sure to delete L.D.L.App with ID : " + ID + " ? ", "Delete", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) == DialogResult.OK)
             {
-                if(clsLocalDrivingLicenseApplication.DeleteByLocalDrivingLicenseApplicationID(ID))
+                if(clsLocalDrivingLicenseApplication.DeleteByLocalDrivingLicenseApplicationID(ID,clsGlobal.CurrentUser.UserID))
                 {
                    MessageBox.Show("Deleted Successfully ID : " + ID, "Delete", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }

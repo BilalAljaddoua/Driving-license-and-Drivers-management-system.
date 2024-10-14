@@ -215,7 +215,7 @@ namespace DVLD.People
             {
 
                 //Perform Delele and refresh
-                if (clsPerson.DeletePerson((string)dgvPeople.CurrentRow.Cells[1].Value))  // كان يوجد مشكلة بسيطة هنا وتم حلها
+                if (clsPerson.DeletePerson((string)dgvPeople.CurrentRow.Cells[1].Value,clsGlobal.CurrentUser.UserID))  // كان يوجد مشكلة بسيطة هنا وتم حلها
                 {
                     MessageBox.Show("Person Deleted Successfully.", "Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     _RefreshPeoplList();

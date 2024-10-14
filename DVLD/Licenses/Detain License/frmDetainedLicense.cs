@@ -58,7 +58,7 @@ namespace DVLD.Licenses.Detain_License
             if(string.IsNullOrEmpty(txtFineFees.Text))
             {
                 MessageBox.Show("Please enter fees", "Info", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                txtFineFees.Focus();
+                //txtFineFees.Focus();
                 return;
             }
             
@@ -85,7 +85,7 @@ namespace DVLD.Licenses.Detain_License
         {
             if(string.IsNullOrEmpty(txtFineFees.Text.Trim()))
             {
-                e.Cancel = true;
+               // e.Cancel = true;
                 errorProvider1.SetError(txtFineFees, "this filed is required");
                 //   txtFineFees.Focus();
                 return;

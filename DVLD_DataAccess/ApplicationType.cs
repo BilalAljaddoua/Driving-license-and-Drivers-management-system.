@@ -17,20 +17,11 @@ namespace DVLD_DataAccess
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+             
 
-
-            string quere = @" SELECT
-       [ApplicationTypeID]
-      ,[ApplicationTypeTitle]
-      ,[ApplicationFees]
-  FROM [dbo].[ApplicationTypes]
-   ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
-
-
-            bool IsRead = false;
+            SqlCommand command = new SqlCommand("SP_GetAllApplicationsType", connection);
+            command.CommandType = CommandType.StoredProcedure;
+             
             DataTable dt = new DataTable();
             try
             {
@@ -39,9 +30,7 @@ namespace DVLD_DataAccess
 
                 while (Reader.HasRows)
                 {
-                    IsRead = true;
-                    dt.Load(Reader);
-
+                     dt.Load(Reader);
                 }
             }
             catch (Exception ex) { }
@@ -59,26 +48,25 @@ namespace DVLD_DataAccess
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+             
 
-
-            string quere = @" UPDATE [dbo].[ApplicationTypes]
-                                               SET 
-                                                   [ApplicationTypeTitle] = @ApplicationTypeTitle
-                                                  ,[ApplicationFees] = @ApplicationFees
-                                             WHERE  ApplicationTypeID=@ApplicationTypeID ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+            SqlCommand command = new SqlCommand("SP_UpdateApplictionType", connection);
+            command.CommandType = CommandType.StoredProcedure;
 
             command.Parameters.AddWithValue("@ApplicationTypeTitle  ", ApplicationTypeTitle);
             command.Parameters.AddWithValue("@ApplicationFees  ", ApplicationFees);
             command.Parameters.AddWithValue("@ApplicationTypeID  ", ApplicationTypeID);
-
-            int Result = 0;
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
+            bool IsSuccess = false;
             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -87,7 +75,8 @@ namespace DVLD_DataAccess
             }
 
 
-            return (Result != 0);
+            return IsSuccess;
+
 
         }
 
@@ -96,13 +85,10 @@ namespace DVLD_DataAccess
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+             
 
-
-            string quere = @" SELECT * FROM  [dbo].[ApplicationTypes]
-                                                
-                                             WHERE  ApplicationTypeID=@ApplicationTypeID ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+            SqlCommand command = new SqlCommand("SP_FindApplicationType", connection);
+            command.CommandType = CommandType.StoredProcedure;
 
             command.Parameters.AddWithValue("@ApplicationTypeID  ", ApplicationTypeID);
 

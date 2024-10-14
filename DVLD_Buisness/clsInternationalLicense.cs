@@ -106,7 +106,6 @@ namespace DVLD_Buisness
             {
                 clsApplication Application = clsApplication.FindApplicationsByApplicationID(ApplicationID);
 
-
                 return new clsInternationalLicense(Application.ApplicationID,
                     Application.ApplicantPersonID,
                                      Application.ApplicationDate,

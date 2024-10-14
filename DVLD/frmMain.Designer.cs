@@ -60,6 +60,11 @@
             this.changePasswordToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.signOutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.logsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteLogsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.updateLogsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addLoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loginLogsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lblLoggedInUser = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.msMainMenue.SuspendLayout();
@@ -76,11 +81,12 @@
             this.peopleToolStripMenuItem,
             this.driversToolStripMenuItem,
             this.employeesToolStripMenuItem,
-            this.closeToolStripMenuItem});
+            this.closeToolStripMenuItem,
+            this.logsToolStripMenuItem});
             this.msMainMenue.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
             this.msMainMenue.Location = new System.Drawing.Point(0, 0);
             this.msMainMenue.Name = "msMainMenue";
-            this.msMainMenue.Size = new System.Drawing.Size(1924, 72);
+            this.msMainMenue.Size = new System.Drawing.Size(1924, 83);
             this.msMainMenue.TabIndex = 1;
             this.msMainMenue.Text = "menuStrip1";
             // 
@@ -360,6 +366,52 @@
             this.signOutToolStripMenuItem.Text = "Sign &Out";
             this.signOutToolStripMenuItem.Click += new System.EventHandler(this.signOutToolStripMenuItem_Click);
             // 
+            // logsToolStripMenuItem
+            // 
+            this.logsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.deleteLogsToolStripMenuItem,
+            this.updateLogsToolStripMenuItem,
+            this.addLoToolStripMenuItem,
+            this.loginLogsToolStripMenuItem});
+            this.logsToolStripMenuItem.Image = global::DVLD.Properties.Resources.Add_Fingerprint;
+            this.logsToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.logsToolStripMenuItem.Name = "logsToolStripMenuItem";
+            this.logsToolStripMenuItem.Size = new System.Drawing.Size(218, 79);
+            this.logsToolStripMenuItem.Text = "Logs System";
+            // 
+            // deleteLogsToolStripMenuItem
+            // 
+            this.deleteLogsToolStripMenuItem.Image = global::DVLD.Properties.Resources.Trash_Can1;
+            this.deleteLogsToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.deleteLogsToolStripMenuItem.Name = "deleteLogsToolStripMenuItem";
+            this.deleteLogsToolStripMenuItem.Size = new System.Drawing.Size(300, 46);
+            this.deleteLogsToolStripMenuItem.Text = "Delete/Cancel Logs";
+            this.deleteLogsToolStripMenuItem.Click += new System.EventHandler(this.deleteLogsToolStripMenuItem_Click);
+            // 
+            // updateLogsToolStripMenuItem
+            // 
+            this.updateLogsToolStripMenuItem.Image = global::DVLD.Properties.Resources.Available_Updates;
+            this.updateLogsToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.updateLogsToolStripMenuItem.Name = "updateLogsToolStripMenuItem";
+            this.updateLogsToolStripMenuItem.Size = new System.Drawing.Size(300, 46);
+            this.updateLogsToolStripMenuItem.Text = "Update Logs";
+            // 
+            // addLoToolStripMenuItem
+            // 
+            this.addLoToolStripMenuItem.Image = global::DVLD.Properties.Resources.Add_New;
+            this.addLoToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.addLoToolStripMenuItem.Name = "addLoToolStripMenuItem";
+            this.addLoToolStripMenuItem.Size = new System.Drawing.Size(300, 46);
+            this.addLoToolStripMenuItem.Text = "Add Logs";
+            // 
+            // loginLogsToolStripMenuItem
+            // 
+            this.loginLogsToolStripMenuItem.Image = global::DVLD.Properties.Resources.Enter;
+            this.loginLogsToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.loginLogsToolStripMenuItem.Name = "loginLogsToolStripMenuItem";
+            this.loginLogsToolStripMenuItem.Size = new System.Drawing.Size(300, 46);
+            this.loginLogsToolStripMenuItem.Text = "Login Logs";
+            // 
             // lblLoggedInUser
             // 
             this.lblLoggedInUser.AutoSize = true;
@@ -448,6 +500,11 @@
         private System.Windows.Forms.ToolStripMenuItem detainLicenseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem releaseDetainedLicenseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ManageDetainedLicensestoolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem logsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem deleteLogsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem updateLogsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addLoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loginLogsToolStripMenuItem;
     }
 }
 

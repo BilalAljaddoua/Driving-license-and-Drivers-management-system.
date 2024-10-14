@@ -18,7 +18,7 @@ namespace DVLD_DataAccess
 
         //================================================Add New Tests===================================================================================
         static public int AddTest(int TestAppointmentID, bool TestResult, string   Notes, int CreatedByUserID)
-        {
+        { 
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
  

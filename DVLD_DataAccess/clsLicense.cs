@@ -47,7 +47,7 @@ namespace DVLD_DataAccess
 
             return dataTable;
 
-        }
+        } 
 
         //================================================Add New License===================================================================================
         static public int AddLicenses(int ApplicationID, int DriverID, int LicenseClassID, DateTime IssueDate, DateTime ExpirationDate, string Notes, float PaidFees, bool IsActive, int IssueReason, int CreatedByUserID)

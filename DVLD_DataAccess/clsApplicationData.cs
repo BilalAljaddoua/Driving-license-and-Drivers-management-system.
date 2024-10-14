@@ -15,25 +15,10 @@ namespace DVLD_DataAccess
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+ 
+            SqlCommand command = new SqlCommand("SP_AddApplications", connection);
+            command.CommandType = CommandType.StoredProcedure;
 
-
-            string quere = @" INSERT INTO [dbo].[Applications]
-                                                                             ([ApplicantPersonID]
-                                                                             ,[ApplicationDate]
-                                                                             ,[ApplicationTypeID]
-                                                                             ,[ApplicationStatus]
-                                                                             ,[LastStatusDate]
-                                                                             ,[PaidFees]
-                                                                             ,[CreatedByUserID])
-                                                                       VALUES
-                                                                             (@ApplicantPersonID
-                                                                             ,@ApplicationDate 
-                                                                             ,@ApplicationTypeID 
-                                                                             ,@ApplicationStatus 
-                                                                             ,@LastStatusDate 
-                                                                             ,@PaidFees 
-                                                                             ,@CreatedByUserID ) ;select  SCOPE_IDENTITY()";
-            SqlCommand command = new SqlCommand(quere, connection);
             command.Parameters.AddWithValue("@ApplicantPersonID", ApplicantPersonID);
             command.Parameters.AddWithValue("@ApplicationDate", ApplicationDate);
             command.Parameters.AddWithValue("@ApplicationTypeID", ApplicationTypeID);
@@ -42,20 +27,17 @@ namespace DVLD_DataAccess
             command.Parameters.AddWithValue("@PaidFees", PaidFees);
             command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
 
-
-
             int ApplicationID = 0;
-            object Result;
-            try
+            SqlParameter parameter = new SqlParameter("@ApplicationID", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
+             try
             {
                 connection.Open();
-
-                Result = command.ExecuteScalar();
-                if (Result != null && int.TryParse(Result.ToString(), out int AppID))
-                {
-                    ApplicationID = AppID;
-                }
-
+                command.ExecuteNonQuery();
+                ApplicationID = (int)command.Parameters["@ApplicationID"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -65,7 +47,6 @@ namespace DVLD_DataAccess
 
             return ApplicationID; ;
 
-
         }
 
         //================================================Find Applications==================================================================================
@@ -73,20 +54,10 @@ namespace DVLD_DataAccess
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+             
 
-
-            string quere = @"SELECT [ApplicationID]
-      ,[ApplicantPersonID]
-      ,[ApplicationDate]
-      ,[ApplicationTypeID]
-      ,[ApplicationStatus]
-      ,[LastStatusDate]
-      ,[PaidFees]
-      ,[CreatedByUserID]
-  FROM [dbo].[Applications] where ApplicationID=@ApplicationID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
+            SqlCommand command = new SqlCommand("SP_FindApplicationsByApplicationID", connection);
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@ApplicationID", ApplicationID);
             bool IsRead = false;
 
@@ -95,7 +66,7 @@ namespace DVLD_DataAccess
                 connection.Open();
                 SqlDataReader Reader = command.ExecuteReader();
 
-                while (Reader.Read())
+                if (Reader.Read())
                 {
                     IsRead = true;
 
@@ -108,29 +79,25 @@ namespace DVLD_DataAccess
                     PaidFees = Convert.ToSingle(Reader["PaidFees"]);
 
                 }
-
-                Reader.Close();
+                 Reader.Close();
             }
             catch (Exception ex) { }
             finally
             {
                 connection.Close();
-            }
-
-
-            return IsRead;
-
+            }  
+            return IsRead; 
         }
  
         static public DataTable GetAllAppliactions()
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+             
 
+            SqlCommand command = new SqlCommand("SP_GetAllAppliactions", connection);
+            command.CommandType = CommandType.StoredProcedure;
 
-            string quere = @"SELECT * from  Applications  ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
             DataTable dt = new DataTable();
 
             try
@@ -163,18 +130,9 @@ namespace DVLD_DataAccess
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-
-            string quere = @"
-                UPDATE [dbo].[Applications]
-                         SET       [ApplicationDate] = @ApplicationDate 
-                                     ,[ApplicationTypeID] = @ApplicationTypeID 
-                                     ,[ApplicationStatus] = @ApplicationStatus 
-                                     ,[LastStatusDate] = @LastStatusDate 
-                                     ,[PaidFees] = @PaidFees 
-                                     ,[CreatedByUserID] = @CreatedByUserID 
-                        WHERE  ApplicationID=@ApplicationID  ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+              
+            SqlCommand command = new SqlCommand("SP_UpdateUpdateApplicationByApplicationID", connection);
+            command.CommandType = CommandType.StoredProcedure;
 
             command.Parameters.AddWithValue("@ApplicationDate", ApplicationDate);
             command.Parameters.AddWithValue("@ApplicationTypeID", ApplicationTypeID);
@@ -184,12 +142,17 @@ namespace DVLD_DataAccess
             command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
             command.Parameters.AddWithValue("@ApplicationID", ApplicationID);
 
-            int Result = 0;
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
+            bool IsSuccess = false;
             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -198,7 +161,8 @@ namespace DVLD_DataAccess
             }
 
 
-            return Result != 0;
+            return IsSuccess;
+
 
         }
 
@@ -207,25 +171,22 @@ namespace DVLD_DataAccess
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @" DELETE FROM [dbo].[Applications]
-                                          WHERE ApplicantPersonID=@ApplicantPersonID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+             
+            SqlCommand command = new SqlCommand("SP_DeleteUserByApplicationsID", connection);
+            command.CommandType = CommandType.StoredProcedure;
 
             command.Parameters.AddWithValue("@ApplicantPersonID", ApplicantPersonID);
-
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
             bool IsSuccess = false;
-            object Result;
             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-                if (Result != null && int.TryParse(Result.ToString(), out int ID))
-                {
-                    IsSuccess = (ID != 0);
-                }
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -233,7 +194,9 @@ namespace DVLD_DataAccess
                 connection.Close();
             }
 
+
             return IsSuccess;
+
 
 
         }
@@ -242,144 +205,60 @@ namespace DVLD_DataAccess
         {
             int ActiveApplicationID = -1;
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @"SELECT  LocalDrivingLicenseApplications.ApplicationID  FROM     Applications INNER JOIN
-                  ApplicationTypes ON Applications.ApplicationTypeID = ApplicationTypes.ApplicationTypeID INNER JOIN
-                  People ON Applications.ApplicantPersonID = People.PersonID INNER JOIN
-                  LocalDrivingLicenseApplications ON Applications.ApplicationID = LocalDrivingLicenseApplications.ApplicationID INNER JOIN
-                  LicenseClasses ON LocalDrivingLicenseApplications.LicenseClassID = LicenseClasses.LicenseClassID 
-                 WHERE  ((Applications.ApplicantPersonID =@PersonID) AND (Applications.ApplicationTypeID = @ApplicationTypeID) AND (LocalDrivingLicenseApplications.LicenseClassID=@LicenseClassID)And (Applications.ApplicationStatus=1 ))";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+ 
+            SqlCommand command = new SqlCommand("SP_GetActiveApplicationIDForLicenseClass", connection);
+            command.CommandType = CommandType.StoredProcedure;
 
             command.Parameters.AddWithValue("@PersonID", PersonID);
             command.Parameters.AddWithValue("@ApplicationTypeID", ApplicationTypeID);
             command.Parameters.AddWithValue("@LicenseClassID", LicenseClassID);
-
-            bool IsRead = false;
-            try
+            SqlParameter parameter = new SqlParameter("@ActiveApp", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
+             try
             {
                 connection.Open();
-                SqlDataReader Reader = command.ExecuteReader();
-
-                if (Reader.Read())
-                {
-                    ActiveApplicationID = Convert.ToInt16(Reader["ApplicationID"]);
-                }
-                Reader.Close();
+                command.ExecuteNonQuery();
+                ActiveApplicationID = (int)command.Parameters["@ActiveApp"].Value;
             }
             catch (Exception ex) { }
             finally
             {
                 connection.Close();
             }
-
+             
 
             return ActiveApplicationID;
 
         }
-        static public bool IsApplicationExist(int ApplicationID)
-        {
 
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @" select Found=1 FROM [dbo].[Applications]
-                                          WHERE ApplicantPersonID=@ApplicantPersonID  ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
-            command.Parameters.AddWithValue("@PersonID", ApplicationID);
-
-            bool IsRead = false;
-            try
-            {
-                connection.Open();
-                SqlDataReader Reader = command.ExecuteReader();
-
-
-                IsRead = Reader.HasRows;
-
-                Reader.Close();
-            }
-            catch (Exception ex) { }
-            finally
-            {
-                connection.Close();
-            }
-
-
-            return IsRead;
-
-        }
-        static public int GetActiveApplicationID(int PersonID, int ApplicationTypeID)
-        {
-            int ApplicationID = -1;
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @"   select ActiveApplicationID=ApplicationID from dbo.Applications
-                                              where ApplicantPersonID=@PersonID and ApplicationTypeID=@ApplicationTypeID";
-
-            SqlCommand command = new SqlCommand(quere, connection);
-
-            command.Parameters.AddWithValue("@PersonID", PersonID);
-            command.Parameters.AddWithValue("@ApplicationTypeID", ApplicationTypeID);
-
-            try
-            {
-                connection.Open();
-                object Result;
-                Result = command.ExecuteScalar();
-
-                if ((Result != null) && (int.TryParse(Result.ToString(), out int ID)))
-                {
-                    ApplicationID = ID;
-                }
-
-            }
-            catch (Exception ex) { }
-            finally
-            {
-                connection.Close();
-            }
-
-
-            return ApplicationID;
-
-        }
-        static bool DoesPersonHasActiveApplication(int PersonID, int ApplicationTypeID)
-        {
-            return GetActiveApplicationID(PersonID, ApplicationTypeID) != -1;
-        }
-        //=================================================================================================================================
+         //=================================================================================================================================
         static public bool UpdateStatus(int ApplicationID, DateTime LastStatusDate, int ApplicationStatus)
 
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-
-            string quere = @"
-                UPDATE [dbo].[Applications]
-                         SET 
-                                      [ApplicationStatus] = @ApplicationStatus 
-                                     ,[LastStatusDate] = @LastStatusDate 
-                         WHERE  ApplicationID=@ApplicationID  ";
-
-            SqlCommand command = new SqlCommand(quere, connection);
+ 
+            SqlCommand command = new SqlCommand("SP_UpdateStatus", connection);
+            command.CommandType = CommandType.StoredProcedure;
 
             command.Parameters.AddWithValue("@ApplicationStatus", ApplicationStatus);
             command.Parameters.AddWithValue("@LastStatusDate", LastStatusDate);
             command.Parameters.AddWithValue("@ApplicationID", ApplicationID);
 
-            int Result = 0;
+            SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(parameter);
+            bool IsSuccess = false;
             try
             {
                 connection.Open();
-                Result = command.ExecuteNonQuery();
-
+                command.ExecuteNonQuery();
+                IsSuccess = (bool)command.Parameters["@IsSuccess"].Value;
             }
             catch (Exception ex) { }
             finally
@@ -388,7 +267,7 @@ namespace DVLD_DataAccess
             }
 
 
-            return Result != 0;
+            return IsSuccess;
 
         }
 

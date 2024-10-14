@@ -54,13 +54,14 @@ namespace DVLD.Applications.International_License
 
                 return;
             }
-           
-            int ActiveInternaionalLicenseID=clsInternationalLicense.FindByLocalLicenseID(LocalLicenseID).InternationalLicenseID;
-            if(ActiveInternaionalLicenseID!=-1)
+
+            clsInternationalLicense ActiveInternaionalLicense =clsInternationalLicense.FindByLocalLicenseID(LocalLicenseID) ;
+            if(ActiveInternaionalLicense!=null)
             {
-                MessageBox.Show("Person already have an active international license with ID = " + ActiveInternaionalLicenseID.ToString(), "Not allowed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Person already have an active international license with ID = " + ActiveInternaionalLicense.InternationalLicenseID.ToString(), "Not allowed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 llInfo.Enabled = true;
-                _InternationalID = ActiveInternaionalLicenseID;
+                _InternationalID = ActiveInternaionalLicense.InternationalLicenseID;
+
 
                 btnIssue.Enabled = false;
                 return; 
@@ -94,7 +95,20 @@ namespace DVLD.Applications.International_License
                 return;
             }
 
-             clsInternationalLicense InternationalLicense= new clsInternationalLicense();
+            clsApplication ApplicationForInternationalLicens=new clsApplication();
+            ApplicationForInternationalLicens.ApplicationTypeID = clsApplication.enApplicationType.NewInternationalLicense;
+            ApplicationForInternationalLicens.ApplicationDate=DateTime.Now;
+            ApplicationForInternationalLicens.ApplicantPersonID = ctrIDriverLicenseWithFilter1.SelectedLicenseInfo.PersonInfo.PersonID;
+            ApplicationForInternationalLicens.ApplicationStatus = clsApplication.enApplicationStatus.Completed;
+            ApplicationForInternationalLicens.CreatedByUserID = clsGlobal.CurrentUser.UserID;
+            ApplicationForInternationalLicens.PaidFees = clsApplicationType.FindApplicationType(clsApplication.enApplicationType.NewInternationalLicense).Fees;
+            ApplicationForInternationalLicens.LastStatusDate = DateTime.Now;
+            if(!ApplicationForInternationalLicens.Save())
+            {
+                MessageBox.Show("There are an error happend","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                return;
+            }
+              clsInternationalLicense InternationalLicense= new clsInternationalLicense();
 
             InternationalLicense.ApplicantPersonID = ctrIDriverLicenseWithFilter1.SelectedLicenseInfo.DriverInfo.PersonID;
             InternationalLicense.ApplicationDate = DateTime.Now;
@@ -102,7 +116,7 @@ namespace DVLD.Applications.International_License
             InternationalLicense.LastStatusDate = DateTime.Now;
             InternationalLicense.PaidFees = clsApplicationType.FindApplicationType( clsApplication.enApplicationType.NewInternationalLicense).Fees;
             InternationalLicense.CreatedByUserID = clsGlobal.CurrentUser.UserID;
-
+            InternationalLicense.ApplicationID = ApplicationForInternationalLicens.ApplicationID;
 
             InternationalLicense.DriverID = ctrIDriverLicenseWithFilter1.SelectedLicenseInfo.DriverID;
             InternationalLicense.IssuedUsingLocalLicenseID = ctrIDriverLicenseWithFilter1.SelectedLicenseInfo.LicenseID;
@@ -130,6 +144,8 @@ namespace DVLD.Applications.International_License
                 _InternationalLicense = InternationalLicense;
                 lblInterApplication.Text = InternationalLicense.ApplicationID.ToString();
                 _InternationalID = InternationalLicense.InternationalLicenseID;
+                lblInterLicensID.Text=InternationalLicense.InternationalLicenseID.ToString();
+                lblExDate.Text=InternationalLicense.ExpirationDate.ToString();
             }
 
         }

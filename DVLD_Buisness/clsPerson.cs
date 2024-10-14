@@ -128,9 +128,9 @@ namespace DVLD_Buisness
             return null;
         }
         //===================================================================================================================================================================
-        static public bool DeletePerson(string NationalNo)
+        static public bool DeletePerson(string NationalNo,int UserID)
         {
-            return clsPersonData.DeletePerson(NationalNo);
+            return clsPersonData.DeletePerson(NationalNo, UserID);
         }
 
         //=====================================================================================================================================================================

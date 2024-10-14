@@ -69,7 +69,7 @@ namespace DVLD_DataAccess
         }
 
         //================================================Find Person==================================================================================
-
+         
         static public DataTable GetAllPeople()
         {
 
@@ -287,7 +287,7 @@ namespace DVLD_DataAccess
 
         //================================================Delete Person==================================================================================
 
-        static public bool DeletePerson(string NationalNo)
+        static public bool DeletePerson(string NationalNo,int UserID)
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
@@ -296,6 +296,8 @@ namespace DVLD_DataAccess
             SqlCommand command = new SqlCommand("SP_DeletePerson", connection);
             command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@NationalNo", NationalNo);
+            command.Parameters.AddWithValue("@UserID", UserID);
+
             bool IsSuccess = false;
             SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
             {
