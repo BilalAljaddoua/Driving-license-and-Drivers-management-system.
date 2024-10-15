@@ -35,6 +35,7 @@ namespace DVLD
                 frmMain frmMain = new frmMain(UserID);
                 if (frmLogin.Tag != null)
                 {
+                    frmMain.NumbeerOfStage = frmLogin.NumberOfStage;
                     Application.Run(frmMain);
                     IsReLogin = (Convert.ToInt16(frmMain.Tag)) == 1;
                 }

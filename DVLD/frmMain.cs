@@ -1,4 +1,5 @@
-﻿using DVLD.Applications;
+﻿using Bussiness_Layer;
+using DVLD.Applications;
 using DVLD.Applications.International_License;
 using DVLD.Applications.Local_Driving_License;
 using DVLD.Applications.Renew_Local_License;
@@ -26,12 +27,18 @@ namespace DVLD
 
     public partial class frmMain : Form
     {
-        frmLogin _frmLogin;
-
+        private frmLogin _frmLogin;
+        public int? NumbeerOfStage;
         public frmMain( frmLogin frm )
         {
             InitializeComponent();
             _frmLogin= frm;
+        }
+        ~frmMain()
+         {
+            clsLoginLogs logs = clsLoginLogs.FindLoginLogs(NumbeerOfStage);
+            logs.DateOfLoginOut = DateTime.Now;
+            logs.Save();
 
         }
         public frmMain( int  UserID )
@@ -74,6 +81,9 @@ namespace DVLD
 
         private void signOutToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            clsLoginLogs logs = clsLoginLogs.FindLoginLogs(NumbeerOfStage);
+            logs.DateOfLoginOut = DateTime.Now;
+            logs.Save();
             clsGlobal.CurrentUser = null;
             this.Tag = 1;
             this.Close();
@@ -191,6 +201,12 @@ namespace DVLD
         private void deleteLogsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             frmDeleteLogs frm=new frmDeleteLogs();
+            frm.ShowDialog();
+        }
+
+        private void loginLogsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmLogInLogs frm=new frmLogInLogs();
             frm.ShowDialog();
         }
     }

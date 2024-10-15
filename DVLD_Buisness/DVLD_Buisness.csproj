@@ -65,6 +65,7 @@
     <Compile Include="LogsSystem\clsAppointmentDeleteLogs.cs" />
     <Compile Include="LogsSystem\clsDeletePeopleLogs.cs" />
     <Compile Include="LogsSystem\clsLDLA_DeleteLogs.cs" />
+    <Compile Include="LogsSystem\clsLoginLogsBussniss.cs" />
     <Compile Include="LogsSystem\clsTestsDeleteLogs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

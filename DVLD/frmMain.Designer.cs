@@ -411,6 +411,7 @@
             this.loginLogsToolStripMenuItem.Name = "loginLogsToolStripMenuItem";
             this.loginLogsToolStripMenuItem.Size = new System.Drawing.Size(300, 46);
             this.loginLogsToolStripMenuItem.Text = "Login Logs";
+            this.loginLogsToolStripMenuItem.Click += new System.EventHandler(this.loginLogsToolStripMenuItem_Click);
             // 
             // lblLoggedInUser
             // 

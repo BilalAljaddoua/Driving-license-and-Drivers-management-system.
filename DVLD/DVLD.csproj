@@ -22,9 +22,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-        <LangVersion>8.0</LangVersion>
-        <Nullable>enable</Nullable>
-
+    <LangVersion>8.0</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -34,7 +33,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ConfigParser, Version=0.3.2.8, Culture=neutral, processorArchitecture=MSIL">
@@ -221,6 +219,12 @@
     </Compile>
     <Compile Include="System Logs\frmDeleteLogs.Designer.cs">
       <DependentUpon>frmDeleteLogs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="System Logs\frmLogInLogs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="System Logs\frmLogInLogs.Designer.cs">
+      <DependentUpon>frmLogInLogs.cs</DependentUpon>
     </Compile>
     <Compile Include="User\ctrlUserCard.cs">
       <SubType>UserControl</SubType>
@@ -415,6 +419,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="System Logs\frmDeleteLogs.resx">
       <DependentUpon>frmDeleteLogs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="System Logs\frmLogInLogs.resx">
+      <DependentUpon>frmLogInLogs.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="User\ctrlUserCard.resx">
       <DependentUpon>ctrlUserCard.cs</DependentUpon>

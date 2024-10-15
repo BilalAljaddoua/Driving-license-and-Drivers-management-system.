@@ -1,4 +1,5 @@
-﻿using DVLD.Classes;
+﻿using Bussiness_Layer;
+using DVLD.Classes;
 using DVLD_Buisness;
 using System;
 using System.Collections.Generic;
@@ -18,12 +19,11 @@ namespace DVLD.Login
         {
             InitializeComponent();
         }
-
-       
         private void btnClose_Click(object sender, EventArgs e)
         {
             this.Close();
         }
+         public int? NumberOfStage = 0;
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
@@ -55,7 +55,12 @@ namespace DVLD.Login
                 }
 
                  clsGlobal.CurrentUser = user;
-                 this.Tag=user.UserID;
+                clsLoginLogs LoginLogs = new clsLoginLogs();
+                LoginLogs.UserID = user.UserID;
+                LoginLogs.DateOfLogin = DateTime.Now;
+                LoginLogs.Save(); 
+                this.Tag=user.UserID;
+                NumberOfStage = LoginLogs.RecordID;
                 this.Close();
 
 
