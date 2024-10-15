@@ -42,7 +42,7 @@ namespace Bussiness_Layer
         }
         private bool _UpdateLoginLogs()
         {
-            bool IsSuccess = clsLoginLogsData.UpdateLoginLogsTable(RecordID, UserID, DateOfLogin, DateOfLoginOut);
+            bool IsSuccess = clsLoginLogsData.SetLogOut(RecordID,  DateOfLoginOut);
             return IsSuccess;
         }
         static public clsLoginLogs FindLoginLogs(int? RecordID)

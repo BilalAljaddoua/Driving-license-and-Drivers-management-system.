@@ -34,13 +34,7 @@ namespace DVLD
             InitializeComponent();
             _frmLogin= frm;
         }
-        ~frmMain()
-         {
-            clsLoginLogs logs = clsLoginLogs.FindLoginLogs(NumbeerOfStage);
-            logs.DateOfLoginOut = DateTime.Now;
-            logs.Save();
-
-        }
+ 
         public frmMain( int  UserID )
         {
             InitializeComponent();
@@ -208,6 +202,15 @@ namespace DVLD
         {
             frmLogInLogs frm=new frmLogInLogs();
             frm.ShowDialog();
+        }
+
+        private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+
+            clsLoginLogs logs = clsLoginLogs.FindLoginLogs(NumbeerOfStage);
+            logs.DateOfLoginOut = DateTime.Now;
+            logs.Save();
+
         }
     }
 }

@@ -86,7 +86,7 @@ using DVLD_DataAccess;
                     command.Parameters.AddWithValue("@DateOfLogin", DateOfLogin);
                     command.Parameters.AddWithValue("@DateOfLogOut", (object)DateOfLogOut ?? DBNull.Value);
 
-                    SqlParameter parameter = new SqlParameter(@"RecordID", SqlDbType.Int)
+                    SqlParameter parameter = new SqlParameter("@RecordID", SqlDbType.Int)
                     {
                         Direction = ParameterDirection.Output
                     };
@@ -107,7 +107,7 @@ using DVLD_DataAccess;
                 }
             }
         }
-        static public bool UpdateLoginLogsTable(int? RecordID, int? UserID, DateTime? DateOfLogin, DateTime? DateOfLogOut)
+        static public bool SetLogOut(int? RecordID,  DateTime? DateOfLogOut)
         {
             using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
             {
@@ -115,9 +115,7 @@ using DVLD_DataAccess;
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@RecordID", RecordID);
-                    command.Parameters.AddWithValue("@UserID", UserID);
-                    command.Parameters.AddWithValue("@DateOfLogin", DateOfLogin);
-                    command.Parameters.AddWithValue("@DateOfLogOut", (object)DateOfLogOut ?? DBNull.Value);
+                     command.Parameters.AddWithValue("@DateOfLogOut", (object)DateOfLogOut ?? DBNull.Value);
 
                     SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
                     {
