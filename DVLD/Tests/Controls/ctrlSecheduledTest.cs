@@ -118,10 +118,52 @@ namespace DVLD.Tests
 
         }
 
+        public void LoadData(clsTestAppointment TestAppointment)
+        { 
+            //incase we did not find any appointment .
+            if (TestAppointment == null)
+            {
+                MessageBox.Show("Error: No  Appointment ID = " + TestAppointment.TestAppointmentID.ToString(),
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                TestAppointment.TestAppointmentID = -1;
+                return;
+            }
+            _TestID = TestAppointment.TestID;
+            _LocalDrivingLicenseApplicationID = TestAppointment.LocalDrivingLicenseApplicationID;
+            _LocalDrivingLicenseApplication = clsLocalDrivingLicenseApplication.FindByLocalDrivingLicenseAppID(TestAppointment.LocalDrivingLicenseApplicationID);
+
+            if (_LocalDrivingLicenseApplication == null)
+            {
+                MessageBox.Show("Error: No Local Driving License Application with ID = " + _LocalDrivingLicenseApplicationID.ToString(),
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            lblLocalDrivingLicenseAppID.Text = _LocalDrivingLicenseApplication.LocalDrivingLicenseApplicationID.ToString();
+            lblDrivingClass.Text = _LocalDrivingLicenseApplication.LicenseClassInfo.ClassName;
+            lblFullName.Text = _LocalDrivingLicenseApplication.PersonFullName;
+
+
+            //this will show the trials for this test before 
+            lblTrial.Text = _LocalDrivingLicenseApplication.NuberOfTrial(_TestTypeID).ToString();
+
+            lblDate.Text = clsFormat.DateToShort(TestAppointment.AppointmentDate);
+            lblFees.Text = TestAppointment.PaidFees.ToString();
+            lblTestID.Text = (TestAppointment.TestID) == -1 ? "Not Taken Yet" : TestAppointment.TestID.ToString();
+
+
+
+
+
+        }
 
         public ctrlSecheduledTest()
         {
             InitializeComponent();
+        }
+
+        private void gbTestType_Enter(object sender, EventArgs e)
+        {
+
         }
     }
 }

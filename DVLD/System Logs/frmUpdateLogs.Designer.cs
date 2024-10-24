@@ -1,6 +1,6 @@
 ﻿namespace DVLD.System_Logs
 {
-    partial class frmLogInLogs
+    partial class frmUpdateLogs
     {
         /// <summary>
         /// Required designer variable.
@@ -36,7 +36,9 @@
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.cbField = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.dtpFrom = new System.Windows.Forms.DateTimePicker();
@@ -45,6 +47,7 @@
             this.cbUsers = new System.Windows.Forms.ComboBox();
             this.button1 = new System.Windows.Forms.Button();
             this.showUserInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.undoTheModificationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -59,8 +62,8 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1491, 811);
-            this.panel1.TabIndex = 1;
+            this.panel1.Size = new System.Drawing.Size(1497, 801);
+            this.panel1.TabIndex = 2;
             // 
             // dataGridView1
             // 
@@ -100,13 +103,17 @@
             // 
             this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.showUserInfoToolStripMenuItem});
+            this.showUserInfoToolStripMenuItem,
+            this.undoTheModificationToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(237, 60);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(326, 116);
+            this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.cbField);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.dtpFrom);
@@ -121,6 +128,16 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Search Properties";
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Times New Roman", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(804, 26);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(65, 26);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "Field:";
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -131,11 +148,26 @@
             this.label2.TabIndex = 4;
             this.label2.Text = "To:";
             // 
+            // cbField
+            // 
+            this.cbField.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbField.Font = new System.Drawing.Font("Times New Roman", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbField.FormattingEnabled = true;
+            this.cbField.Items.AddRange(new object[] {
+            "People",
+            "Test Appointments",
+            "Local Driving Liceinse Applications"});
+            this.cbField.Location = new System.Drawing.Point(881, 26);
+            this.cbField.Name = "cbField";
+            this.cbField.Size = new System.Drawing.Size(283, 34);
+            this.cbField.TabIndex = 6;
+            this.cbField.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Times New Roman", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(777, 40);
+            this.label4.Location = new System.Drawing.Point(784, 69);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(91, 26);
             this.label4.TabIndex = 4;
@@ -182,7 +214,7 @@
             this.cbUsers.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbUsers.Font = new System.Drawing.Font("Times New Roman", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbUsers.FormattingEnabled = true;
-            this.cbUsers.Location = new System.Drawing.Point(880, 32);
+            this.cbUsers.Location = new System.Drawing.Point(881, 66);
             this.cbUsers.Name = "cbUsers";
             this.cbUsers.Size = new System.Drawing.Size(283, 34);
             this.cbUsers.TabIndex = 0;
@@ -197,27 +229,39 @@
             this.button1.TabIndex = 4;
             this.button1.Text = "Close";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.Click += new System.EventHandler(this.btnClose_Click);
             // 
             // showUserInfoToolStripMenuItem
             // 
             this.showUserInfoToolStripMenuItem.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.showUserInfoToolStripMenuItem.Image = global::DVLD.Properties.Resources.info_50px;
+            this.showUserInfoToolStripMenuItem.Image = global::DVLD.Properties.Resources.diff_files_50px;
             this.showUserInfoToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.showUserInfoToolStripMenuItem.Name = "showUserInfoToolStripMenuItem";
-            this.showUserInfoToolStripMenuItem.Size = new System.Drawing.Size(236, 56);
-            this.showUserInfoToolStripMenuItem.Text = "Show User Info";
+            this.showUserInfoToolStripMenuItem.Size = new System.Drawing.Size(325, 56);
+            this.showUserInfoToolStripMenuItem.Text = "Show Updated Information";
             this.showUserInfoToolStripMenuItem.Click += new System.EventHandler(this.showUserInfoToolStripMenuItem_Click);
             // 
-            // frmLogInLogs
+            // undoTheModificationToolStripMenuItem
+            // 
+            this.undoTheModificationToolStripMenuItem.Font = new System.Drawing.Font("Times New Roman", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.undoTheModificationToolStripMenuItem.Image = global::DVLD.Properties.Resources.undo_35px;
+            this.undoTheModificationToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.undoTheModificationToolStripMenuItem.Name = "undoTheModificationToolStripMenuItem";
+            this.undoTheModificationToolStripMenuItem.Size = new System.Drawing.Size(325, 56);
+            this.undoTheModificationToolStripMenuItem.Text = "Undo the modification";
+            this.undoTheModificationToolStripMenuItem.Click += new System.EventHandler(this.undoTheModificationToolStripMenuItem_Click);
+            // 
+            // frmUpdateLogs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1491, 811);
+            this.ClientSize = new System.Drawing.Size(1497, 801);
             this.Controls.Add(this.panel1);
-            this.Name = "frmLogInLogs";
-            this.Text = "frmLogInLogs";
-            this.Load += new System.EventHandler(this.frmLogInLogs_Load);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Name = "frmUpdateLogs";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "frmUpdateLogs";
+            this.Load += new System.EventHandler(this.frmUpdateLogs_Load);
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.contextMenuStrip1.ResumeLayout(false);
@@ -231,6 +275,8 @@
 
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem showUserInfoToolStripMenuItem;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label4;
@@ -240,7 +286,8 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.ComboBox cbUsers;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem showUserInfoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem undoTheModificationToolStripMenuItem;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox cbField;
     }
 }

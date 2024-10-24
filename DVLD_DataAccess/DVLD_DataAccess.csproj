@@ -63,11 +63,14 @@
     <Compile Include="clsUserData.cs" />
     <Compile Include="clsPersonData.cs" />
     <Compile Include="clsCountryData.cs" />
-    <Compile Include="LogsSystem\clsAppointmentDeleteLogs_Data.cs" />
-    <Compile Include="LogsSystem\clsDeletePeopleLogs_Data.cs" />
-    <Compile Include="LogsSystem\clsDeleteTestsLogs_Data.cs" />
-    <Compile Include="LogsSystem\clsLDLA_DeleteLogs_Data.cs" />
-    <Compile Include="LogsSystem\clsLoginLogsData.cs" />
+    <Compile Include="LogsSystem\For Delete\clsAppointmentDeleteLogs_Data.cs" />
+    <Compile Include="LogsSystem\For Delete\clsDeletePeopleLogs_Data.cs" />
+    <Compile Include="LogsSystem\For Delete\clsDeleteTestsLogs_Data.cs" />
+    <Compile Include="LogsSystem\For Delete\clsLDLA_DeleteLogs_Data.cs" />
+    <Compile Include="LogsSystem\For Update\clsUpdatedLocalDrivingLicenseApplicationsData.cs" />
+    <Compile Include="LogsSystem\For Update\clsUpdatedPeopleData.cs" />
+    <Compile Include="LogsSystem\For Login-Logout\clsLoginLogsData.cs" />
+    <Compile Include="LogsSystem\For Update\clsUpdatedTestAppointmentsData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

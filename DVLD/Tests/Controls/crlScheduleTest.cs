@@ -308,7 +308,7 @@ namespace DVLD.Tests
             _TestAppointment.PaidFees = Convert.ToSingle(lblTotalFees.Text);
             _TestAppointment.CreatedByUserID = clsGlobal.CurrentUser.UserID;
             _TestAppointment.ReTakeTestAppliactionID = -1;
-
+            _TestAppointment.UpdatedByUserID = clsGlobal.CurrentUser.UserID;    
             if (_TestAppointment.Save())
             {
                 _Mode = enMode.Update;

@@ -226,6 +226,30 @@
     <Compile Include="System Logs\frmLogInLogs.Designer.cs">
       <DependentUpon>frmLogInLogs.cs</DependentUpon>
     </Compile>
+    <Compile Include="System Logs\ShowDiff\frmShowDiffForLDLA.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="System Logs\ShowDiff\frmShowDiffForLDLA.Designer.cs">
+      <DependentUpon>frmShowDiffForLDLA.cs</DependentUpon>
+    </Compile>
+    <Compile Include="System Logs\ShowDiff\frmShowDiffForPerson.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="System Logs\ShowDiff\frmShowDiffForPerson.Designer.cs">
+      <DependentUpon>frmShowDiffForPerson.cs</DependentUpon>
+    </Compile>
+    <Compile Include="System Logs\frmUpdateLogs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="System Logs\frmUpdateLogs.Designer.cs">
+      <DependentUpon>frmUpdateLogs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="System Logs\ShowDiff\frmShowDiffTestAppointment.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="System Logs\ShowDiff\frmShowDiffTestAppointment.Designer.cs">
+      <DependentUpon>frmShowDiffTestAppointment.cs</DependentUpon>
+    </Compile>
     <Compile Include="User\ctrlUserCard.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -422,6 +446,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="System Logs\frmLogInLogs.resx">
       <DependentUpon>frmLogInLogs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="System Logs\ShowDiff\frmShowDiffForLDLA.resx">
+      <DependentUpon>frmShowDiffForLDLA.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="System Logs\ShowDiff\frmShowDiffForPerson.resx">
+      <DependentUpon>frmShowDiffForPerson.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="System Logs\frmUpdateLogs.resx">
+      <DependentUpon>frmUpdateLogs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="System Logs\ShowDiff\frmShowDiffTestAppointment.resx">
+      <DependentUpon>frmShowDiffTestAppointment.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="User\ctrlUserCard.resx">
       <DependentUpon>ctrlUserCard.cs</DependentUpon>
@@ -874,6 +910,30 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Add Fingerprint.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\team_64px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\info_50px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\diff_files_50px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\undo_50px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\undo_35px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\add_fingerprint_35px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\add_fingerprint_50px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\fingerprint_scan_60px.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

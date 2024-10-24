@@ -83,6 +83,26 @@ namespace DVLD.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap add_fingerprint_35px {
+            get {
+                object obj = ResourceManager.GetObject("add_fingerprint_35px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap add_fingerprint_50px {
+            get {
+                object obj = ResourceManager.GetObject("add_fingerprint_50px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Add_New {
             get {
                 object obj = ResourceManager.GetObject("Add New", resourceCulture);
@@ -473,6 +493,16 @@ namespace DVLD.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap diff_files_50px {
+            get {
+                object obj = ResourceManager.GetObject("diff_files_50px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Driver_License_32 {
             get {
                 object obj = ResourceManager.GetObject("Driver License 32", resourceCulture);
@@ -573,9 +603,29 @@ namespace DVLD.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap fingerprint_scan_60px {
+            get {
+                object obj = ResourceManager.GetObject("fingerprint_scan_60px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap IconLogo {
             get {
                 object obj = ResourceManager.GetObject("IconLogo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap info_50px {
+            get {
+                object obj = ResourceManager.GetObject("info_50px", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1103,6 +1153,16 @@ namespace DVLD.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap team_64px {
+            get {
+                object obj = ResourceManager.GetObject("team_64px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Test_32 {
             get {
                 object obj = ResourceManager.GetObject("Test 32", resourceCulture);
@@ -1156,6 +1216,26 @@ namespace DVLD.Properties {
         internal static System.Drawing.Bitmap Trash_Can1 {
             get {
                 object obj = ResourceManager.GetObject("Trash Can1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap undo_35px {
+            get {
+                object obj = ResourceManager.GetObject("undo_35px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap undo_50px {
+            get {
+                object obj = ResourceManager.GetObject("undo_50px", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

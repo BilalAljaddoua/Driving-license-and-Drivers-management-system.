@@ -96,6 +96,7 @@
             this.gbTestType.TabIndex = 153;
             this.gbTestType.TabStop = false;
             this.gbTestType.Text = "Test Type";
+            this.gbTestType.Enter += new System.EventHandler(this.gbTestType_Enter);
             // 
             // lblTestID
             // 
@@ -104,7 +105,7 @@
             this.lblTestID.Location = new System.Drawing.Point(216, 511);
             this.lblTestID.Margin = new System.Windows.Forms.Padding(9, 0, 9, 0);
             this.lblTestID.Name = "lblTestID";
-            this.lblTestID.Size = new System.Drawing.Size(124, 20);
+            this.lblTestID.Size = new System.Drawing.Size(150, 25);
             this.lblTestID.TabIndex = 191;
             this.lblTestID.Text = "Not Taken Yet";
             // 
@@ -115,7 +116,7 @@
             this.label4.Location = new System.Drawing.Point(94, 511);
             this.label4.Margin = new System.Windows.Forms.Padding(9, 0, 9, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(73, 20);
+            this.label4.Size = new System.Drawing.Size(89, 25);
             this.label4.TabIndex = 189;
             this.label4.Text = "Test ID:";
             // 
@@ -137,7 +138,7 @@
             this.lblDate.Location = new System.Drawing.Point(216, 427);
             this.lblDate.Margin = new System.Windows.Forms.Padding(9, 0, 9, 0);
             this.lblDate.Name = "lblDate";
-            this.lblDate.Size = new System.Drawing.Size(109, 20);
+            this.lblDate.Size = new System.Drawing.Size(142, 25);
             this.lblDate.TabIndex = 188;
             this.lblDate.Text = "[dd/mm/yyyy]";
             // 
@@ -159,7 +160,7 @@
             this.lblDrivingClass.Location = new System.Drawing.Point(216, 304);
             this.lblDrivingClass.Margin = new System.Windows.Forms.Padding(9, 0, 9, 0);
             this.lblDrivingClass.Name = "lblDrivingClass";
-            this.lblDrivingClass.Size = new System.Drawing.Size(89, 20);
+            this.lblDrivingClass.Size = new System.Drawing.Size(110, 25);
             this.lblDrivingClass.TabIndex = 171;
             this.lblDrivingClass.Text = "[???????]";
             // 
@@ -170,7 +171,7 @@
             this.label10.Location = new System.Drawing.Point(86, 304);
             this.label10.Margin = new System.Windows.Forms.Padding(9, 0, 9, 0);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(81, 20);
+            this.label10.Size = new System.Drawing.Size(101, 25);
             this.label10.TabIndex = 170;
             this.label10.Text = "D. Class:";
             // 
@@ -192,7 +193,7 @@
             this.lblLocalDrivingLicenseAppID.Location = new System.Drawing.Point(216, 268);
             this.lblLocalDrivingLicenseAppID.Margin = new System.Windows.Forms.Padding(9, 0, 9, 0);
             this.lblLocalDrivingLicenseAppID.Name = "lblLocalDrivingLicenseAppID";
-            this.lblLocalDrivingLicenseAppID.Size = new System.Drawing.Size(39, 20);
+            this.lblLocalDrivingLicenseAppID.Size = new System.Drawing.Size(50, 25);
             this.lblLocalDrivingLicenseAppID.TabIndex = 168;
             this.lblLocalDrivingLicenseAppID.Text = "[??]";
             // 
@@ -203,7 +204,7 @@
             this.label8.Location = new System.Drawing.Point(64, 268);
             this.label8.Margin = new System.Windows.Forms.Padding(9, 0, 9, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(103, 20);
+            this.label8.Size = new System.Drawing.Size(124, 25);
             this.label8.TabIndex = 167;
             this.label8.Text = "D.L.App.ID:";
             // 
@@ -214,7 +215,7 @@
             this.lblFullName.Location = new System.Drawing.Point(216, 343);
             this.lblFullName.Margin = new System.Windows.Forms.Padding(9, 0, 9, 0);
             this.lblFullName.Name = "lblFullName";
-            this.lblFullName.Size = new System.Drawing.Size(89, 20);
+            this.lblFullName.Size = new System.Drawing.Size(110, 25);
             this.lblFullName.TabIndex = 165;
             this.lblFullName.Text = "[???????]";
             // 
@@ -236,7 +237,7 @@
             this.label6.Location = new System.Drawing.Point(107, 343);
             this.label6.Margin = new System.Windows.Forms.Padding(9, 0, 9, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(60, 20);
+            this.label6.Size = new System.Drawing.Size(75, 25);
             this.label6.TabIndex = 163;
             this.label6.Text = "Name:";
             // 
@@ -247,7 +248,7 @@
             this.lblTrial.Location = new System.Drawing.Point(216, 385);
             this.lblTrial.Margin = new System.Windows.Forms.Padding(9, 0, 9, 0);
             this.lblTrial.Name = "lblTrial";
-            this.lblTrial.Size = new System.Drawing.Size(39, 20);
+            this.lblTrial.Size = new System.Drawing.Size(50, 25);
             this.lblTrial.TabIndex = 162;
             this.lblTrial.Text = "[??]";
             // 
@@ -258,7 +259,7 @@
             this.label5.Location = new System.Drawing.Point(119, 385);
             this.label5.Margin = new System.Windows.Forms.Padding(9, 0, 9, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(48, 20);
+            this.label5.Size = new System.Drawing.Size(62, 25);
             this.label5.TabIndex = 160;
             this.label5.Text = "Trial:";
             // 
@@ -280,7 +281,7 @@
             this.lblFees.Location = new System.Drawing.Point(216, 469);
             this.lblFees.Margin = new System.Windows.Forms.Padding(9, 0, 9, 0);
             this.lblFees.Name = "lblFees";
-            this.lblFees.Size = new System.Drawing.Size(49, 20);
+            this.lblFees.Size = new System.Drawing.Size(62, 25);
             this.lblFees.TabIndex = 159;
             this.lblFees.Text = "[$$$]";
             // 
@@ -291,7 +292,7 @@
             this.label2.Location = new System.Drawing.Point(113, 469);
             this.label2.Margin = new System.Windows.Forms.Padding(9, 0, 9, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(54, 20);
+            this.label2.Size = new System.Drawing.Size(67, 25);
             this.label2.TabIndex = 157;
             this.label2.Text = "Fees:";
             // 
@@ -313,7 +314,7 @@
             this.label1.Location = new System.Drawing.Point(114, 427);
             this.label1.Margin = new System.Windows.Forms.Padding(9, 0, 9, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(53, 20);
+            this.label1.Size = new System.Drawing.Size(64, 25);
             this.label1.TabIndex = 153;
             this.label1.Text = "Date:";
             // 
@@ -355,7 +356,7 @@
             // 
             // ctrlSecheduledTest
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.Controls.Add(this.gbTestType);

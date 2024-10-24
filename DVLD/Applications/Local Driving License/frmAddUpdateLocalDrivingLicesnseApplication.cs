@@ -198,7 +198,8 @@ namespace DVLD.Applications
             _LocalDrivingLicenseApplication.PaidFees = Convert.ToSingle(lblFees.Text);
             _LocalDrivingLicenseApplication.CreatedByUserID = clsGlobal.CurrentUser.UserID;
             _LocalDrivingLicenseApplication.LicenseClassID= LicenseClassID;
-
+           _LocalDrivingLicenseApplication.UpdateDate = DateTime.Now;
+            _LocalDrivingLicenseApplication.UpdatedByUser = clsGlobal.CurrentUser.UserID;
 
             if (_LocalDrivingLicenseApplication.Save())
             {

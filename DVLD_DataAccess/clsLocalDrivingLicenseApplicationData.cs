@@ -154,7 +154,7 @@ namespace DVLD_DataAccess
 
         }
         //================================================Update LocalDrivingLicenseApplications==================================================================================
-        static public bool UpdateLDLAByLDLA_ID(int LocalDrivingLicenseApplicationID, int ApplicationID, int LicenseClassID)
+        static public bool UpdateLDLAByLDLA_ID(int LocalDrivingLicenseApplicationID, int ApplicationID, int LicenseClassID,DateTime UpdateDate,int UpdatedByUser)
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
@@ -163,6 +163,9 @@ namespace DVLD_DataAccess
             command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@LocalDrivingLicenseApplicationID", LocalDrivingLicenseApplicationID);
             command.Parameters.AddWithValue("@LicenseClassID", LicenseClassID);
+            command.Parameters.AddWithValue("@UpdatedDate", UpdateDate);
+            command.Parameters.AddWithValue("@UpdatedByUser", UpdatedByUser);
+
             SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
             {
                 Direction = ParameterDirection.Output

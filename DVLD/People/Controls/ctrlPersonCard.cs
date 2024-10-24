@@ -124,6 +124,144 @@ namespace DVLD.Controls
             LoadPersonInfo(_PersonID);
         }
 
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
 
+        }
+
+        private void lblCountry_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblPhone_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblDateOfBirth_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblGendor_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblAddress_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblEmail_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblNationalNo_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblFullName_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label22_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblPersonID_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pbGendor_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox8_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox7_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label15_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label12_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pbPersonImage_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

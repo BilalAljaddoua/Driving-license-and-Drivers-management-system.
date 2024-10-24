@@ -231,7 +231,7 @@ namespace DVLD.People
             _Person.Phone = txtPhone.Text.Trim();
             _Person.Address = txtAddress.Text.Trim();
             _Person.DateOfBirth = dtpDateOfBirth.Value;
-
+            _Person.UpdatedByUser = clsGlobal.CurrentUser.UserID;
             if (rbMale.Checked)
                 _Person.Gendor = (short) enGendor.Male;
             else

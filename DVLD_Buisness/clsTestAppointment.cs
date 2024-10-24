@@ -17,6 +17,8 @@ namespace DVLD_Buisness
         public float PaidFees { get; set; }
         public bool IsLocked { get; set; }
         public int CreatedByUserID { get; set; }
+        public int UpdatedByUserID { get; set; }
+
         public int TestID { get { return _GetTestID(); } }
         public int ReTakeTestAppliactionID { get; set; }
 
@@ -66,7 +68,7 @@ namespace DVLD_Buisness
         }
         private bool _UpdateTestByTestID()
         {
-            return clsTestAppointmentData.UpdateTestAppointmentByTestAppointmentID(TestAppointmentID, TestTypeID, LocalDrivingLicenseApplicationID, AppointmentDate, PaidFees, IsLocked, CreatedByUserID);
+            return clsTestAppointmentData.UpdateTestAppointmentByTestAppointmentID(TestAppointmentID, TestTypeID, LocalDrivingLicenseApplicationID, AppointmentDate, PaidFees, IsLocked, CreatedByUserID, UpdatedByUserID);
         }
         static public bool DeleteByTestAppointmentID(int TestAppointmentID)
         {

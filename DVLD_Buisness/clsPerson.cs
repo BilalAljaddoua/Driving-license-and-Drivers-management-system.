@@ -11,6 +11,8 @@ namespace DVLD_Buisness
         public enum enMode { enAddNew = 1, enUpdate = 2 }
         public string NationalNo { get; set; }
         public int PersonID { get; set; }
+        public int UpdatedByUser { get; set; }
+
         public string FullName
         {
 
@@ -61,6 +63,7 @@ namespace DVLD_Buisness
             this.NationalityCountryID = NationalityCountryID;
             this.ImagePath = ImagePath;
             this.Mode = enMode.enUpdate;
+            
 
         }
 
@@ -146,7 +149,7 @@ namespace DVLD_Buisness
         private bool _UpdatePerson()
         {
             return clsPersonData.UpdatePerson(PersonID, NationalNo, FirstName, SecondName,
-                ThirdName, LastName, DateOfBirth, Gendor, Address, Phone, Email, NationalityCountryID, ImagePath);
+                ThirdName, LastName, DateOfBirth, Gendor, Address, Phone, Email, NationalityCountryID, ImagePath,UpdatedByUser);
         }
 
         //=====================================================================================================================================================================

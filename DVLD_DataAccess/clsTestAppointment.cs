@@ -133,12 +133,12 @@ namespace DVLD_DataAccess
 
         }
         //================================================Update TestAppointment==================================================================================
-        static public bool UpdateTestAppointmentByTestAppointmentID(int TestAppointmentID, int TestTypeID, int LocalDrivingLicenseApplicationID, DateTime AppointmentDate, float PaidFees, bool IsLocked, int CreatedByUserID)
+        static public bool UpdateTestAppointmentByTestAppointmentID(int TestAppointmentID, int TestTypeID, int LocalDrivingLicenseApplicationID, DateTime AppointmentDate, float PaidFees, bool IsLocked, int CreatedByUserID,int UpdatedByUser)
         {
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
  
-            SqlCommand command = new SqlCommand("SP_UpdateTestAppointmentByTestAppointmentID", connection);
+            SqlCommand command = new SqlCommand("SP_UpdateTestAppointmentByTestAppointID", connection);
 
             command.Parameters.AddWithValue("@TestAppointmentID", TestAppointmentID);
             command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
@@ -147,6 +147,8 @@ namespace DVLD_DataAccess
             command.Parameters.AddWithValue("@PaidFees", PaidFees);
             command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
             command.Parameters.AddWithValue("@IsLocked", IsLocked);
+            command.Parameters.AddWithValue("@UserID", UpdatedByUser);
+
             SqlParameter parameter = new SqlParameter("@IsSuccess", SqlDbType.Bit)
             {
                 Direction = ParameterDirection.Output

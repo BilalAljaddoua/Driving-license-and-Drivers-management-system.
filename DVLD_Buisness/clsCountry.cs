@@ -15,13 +15,13 @@ namespace DVLD_Buisness
             this.CountryName = "";
             this.CountryID = -1;
         }
-        private clsCountry(string countryName, int CountryID)
+        private clsCountry(string countryName, int  CountryID)
         {
             this.CountryName = countryName;
             this.CountryID = CountryID;
         }
 
-        public static clsCountry FindByID(int id)
+        public static clsCountry FindByID(int  id)
         {
             string CountryName = "";
             if (clsCountryData.GetCountryInfoByID(id, ref CountryName))

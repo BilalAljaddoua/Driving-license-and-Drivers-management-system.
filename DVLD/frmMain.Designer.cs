@@ -63,7 +63,6 @@
             this.logsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteLogsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateLogsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addLoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loginLogsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lblLoggedInUser = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -86,7 +85,7 @@
             this.msMainMenue.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
             this.msMainMenue.Location = new System.Drawing.Point(0, 0);
             this.msMainMenue.Name = "msMainMenue";
-            this.msMainMenue.Size = new System.Drawing.Size(1924, 83);
+            this.msMainMenue.Size = new System.Drawing.Size(1924, 72);
             this.msMainMenue.TabIndex = 1;
             this.msMainMenue.Text = "menuStrip1";
             // 
@@ -371,12 +370,11 @@
             this.logsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.deleteLogsToolStripMenuItem,
             this.updateLogsToolStripMenuItem,
-            this.addLoToolStripMenuItem,
             this.loginLogsToolStripMenuItem});
-            this.logsToolStripMenuItem.Image = global::DVLD.Properties.Resources.Add_Fingerprint;
+            this.logsToolStripMenuItem.Image = global::DVLD.Properties.Resources.fingerprint_scan_60px;
             this.logsToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.logsToolStripMenuItem.Name = "logsToolStripMenuItem";
-            this.logsToolStripMenuItem.Size = new System.Drawing.Size(218, 79);
+            this.logsToolStripMenuItem.Size = new System.Drawing.Size(203, 64);
             this.logsToolStripMenuItem.Text = "Logs System";
             // 
             // deleteLogsToolStripMenuItem
@@ -395,14 +393,7 @@
             this.updateLogsToolStripMenuItem.Name = "updateLogsToolStripMenuItem";
             this.updateLogsToolStripMenuItem.Size = new System.Drawing.Size(300, 46);
             this.updateLogsToolStripMenuItem.Text = "Update Logs";
-            // 
-            // addLoToolStripMenuItem
-            // 
-            this.addLoToolStripMenuItem.Image = global::DVLD.Properties.Resources.Add_New;
-            this.addLoToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.addLoToolStripMenuItem.Name = "addLoToolStripMenuItem";
-            this.addLoToolStripMenuItem.Size = new System.Drawing.Size(300, 46);
-            this.addLoToolStripMenuItem.Text = "Add Logs";
+            this.updateLogsToolStripMenuItem.Click += new System.EventHandler(this.updateLogsToolStripMenuItem_Click);
             // 
             // loginLogsToolStripMenuItem
             // 
@@ -505,7 +496,6 @@
         private System.Windows.Forms.ToolStripMenuItem logsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteLogsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem updateLogsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addLoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loginLogsToolStripMenuItem;
     }
 }

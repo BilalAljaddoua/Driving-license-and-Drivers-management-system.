@@ -21,7 +21,8 @@ namespace DVLD_Buisness
         {
             get { return base.PersonInfo.FullName; }
         }
-
+        public int UpdatedByUser {  get; set; }
+        public DateTime UpdateDate { get; set; }
 
         public clsLocalDrivingLicenseApplication()
         {
@@ -88,7 +89,7 @@ namespace DVLD_Buisness
 
         private bool _UpdateByLocalDrivingLicenseApplicationID()
         {
-            return clsLocalDrivingLicenseApplicationData.UpdateLDLAByLDLA_ID(LocalDrivingLicenseApplicationID, ApplicationID, LicenseClassID);
+            return clsLocalDrivingLicenseApplicationData.UpdateLDLAByLDLA_ID(LocalDrivingLicenseApplicationID, ApplicationID, LicenseClassID, UpdateDate,UpdatedByUser);
         }
         static public bool DeleteByLocalDrivingLicenseApplicationID(int LocalDrivingLicenseApplicationID,int UserID)
         {

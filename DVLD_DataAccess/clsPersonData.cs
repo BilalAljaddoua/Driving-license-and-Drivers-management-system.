@@ -224,7 +224,7 @@ namespace DVLD_DataAccess
 
         //================================================Update Person==================================================================================
         static public bool UpdatePerson(int PersonID, string NationalNo, string FirstName, string SecondName, string ThirdName, string LastName, DateTime DateOfBirth,
-                                                                 short Gendor, string Address, string Phone, string Email, int NationalityCountryID, string ImagePath)
+                                                                 short Gendor, string Address, string Phone, string Email, int NationalityCountryID, string ImagePath, int UpdatedByUser)
         {
             bool IsSuccess = false;
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
@@ -233,6 +233,7 @@ namespace DVLD_DataAccess
             SqlCommand command = new SqlCommand("SP_UpdatePerson", connection);
             command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@PersonID", PersonID);
+            command.Parameters.AddWithValue("@UpdatedByUser", UpdatedByUser);
 
             command.Parameters.AddWithValue("@NationalNo", NationalNo);
             command.Parameters.AddWithValue("@FirstName", FirstName);

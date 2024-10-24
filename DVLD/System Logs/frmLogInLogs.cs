@@ -1,4 +1,5 @@
 ﻿using Bussiness_Layer;
+using DVLD.User;
 using DVLD_Buisness;
 using System;
 using System.Collections.Generic;
@@ -74,6 +75,12 @@ namespace DVLD.System_Logs
         private void button1_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void showUserInfoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmUserInfo frmUserInfo = new frmUserInfo((int)dataGridView1.CurrentRow.Cells[1].Value);
+            frmUserInfo.ShowDialog();
         }
     }
 }

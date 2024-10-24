@@ -212,5 +212,11 @@ namespace DVLD
             logs.Save();
 
         }
+
+        private void updateLogsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmUpdateLogs frm=new frmUpdateLogs();
+            frm.ShowDialog();
+        }
     }
 }

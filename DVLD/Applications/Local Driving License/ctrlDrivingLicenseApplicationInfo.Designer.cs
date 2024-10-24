@@ -193,7 +193,7 @@
             this.ctrlApplicationBasicInfo1.Location = new System.Drawing.Point(5, 151);
             this.ctrlApplicationBasicInfo1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ctrlApplicationBasicInfo1.Name = "ctrlApplicationBasicInfo1";
-            this.ctrlApplicationBasicInfo1.Size = new System.Drawing.Size(900, 217);
+            this.ctrlApplicationBasicInfo1.Size = new System.Drawing.Size(915, 217);
             this.ctrlApplicationBasicInfo1.TabIndex = 0;
             // 
             // ctrlDrivingLicenseApplicationInfo
@@ -206,7 +206,7 @@
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "ctrlDrivingLicenseApplicationInfo";
-            this.Size = new System.Drawing.Size(909, 376);
+            this.Size = new System.Drawing.Size(924, 376);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
