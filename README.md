@@ -11,7 +11,6 @@ The Driver License Issuance and Management System is a desktop application built
 - Manage tests (Theory, Visual, Practical).
 - License reservation and unblocking.
 - Track changes and actions within the system with the ability to undo.
-- User and permission management.
 
 ## Requirements
 - **Visual Studio 2022** or newer.
